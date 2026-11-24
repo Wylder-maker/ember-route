@@ -662,8 +662,9 @@ function gainRelic(run,id) {
   if(id==='seal'){ run.maxHp+=7; changeHp(run,7); }
 }
 function scaledDamage(base,attacker,defender,attack=true) {
-  let amount = base + (attack ? attacker.strength : 0);
-  if(attack && attacker.weak>0) amount *= .75;
+  if(!attack) return Math.max(0,Math.floor(base));
+  let amount = base + attacker.strength;
+  if(attacker.weak>0) amount *= .75;
   if(defender.vulnerable>0) amount *= 1.5;
   return Math.max(0,Math.floor(amount));
 }
@@ -1373,8 +1374,13 @@ function rewards() {
       button(quota?'跳过奖励 ↗':'继续 ↗','advance','','button secondary'))+'</div></section>';
 }
 function statuses(actor,id='') {
+  const statusHelp={
+    weak:'造成的攻击伤害减少 25%。',
+    vulnerable:'受到的攻击伤害增加 50%。',
+    frail:'攻击牌和技能牌直接提供的格挡每段减少 '+(100-FRAIL_BLOCK_PERCENT)+'%，每回合减 1 层。',
+  };
   const parts=Object.entries(STATUSES).filter(([id])=>actor[id]>0).map(([id,label])=>
-    '<span'+(id==='frail'?' title="攻击牌和技能牌直接提供的格挡每段减少 '+(100-FRAIL_BLOCK_PERCENT)+'%，每回合减 1 层。"':'')+'>'+label+' '+actor[id]+'</span>');
+    '<span title="'+statusHelp[id]+'">'+label+' '+actor[id]+'</span>');
   for(const [type,ailment] of Object.entries(AILMENTS)){
     if(actor[type]>0) parts.push('<span class="'+type+'" title="'+ailmentRule(ailment)+'">'+ailment.name+' '+actor[type]+' / '+ailment.threshold+'</span>');
   }
@@ -1516,11 +1522,11 @@ function showRules() {
     '<li><b>交战</b> 每回合回复能量并抽牌。查看敌人意图，点击手牌出牌。有单体敌人效果的卡在场上有多个敌人时需要选一次目标，同一张卡的单体效果共用该目标。</li>'+
     '<li><b>回合结束</b> 保留牌留在手里，其余手牌进入弃牌堆，随后敌人行动。下回合清空己方格挡、补充能量并正常抽牌，然后结算待生效的效果。能力牌和带消耗的牌本场战斗只用一次。</li>'+
     '<li><b>手牌</b> 上限为 '+HAND_LIMIT+' 张。固有和保留可在工坊设为升级后获得。首回合固有牌优先上手，超出的固有牌放在抽牌堆顶。手牌满时暂停抽牌。</li>'+
-    '<li><b>状态</b> 每点力量让每次攻击多造成 1 点伤害。虚弱使攻击伤害减少 25%，易伤使受到的伤害增加 50%。</li>'+
+    '<li><b>攻击伤害</b> 每点力量让每段攻击多造成 1 点伤害。虚弱使造成的攻击伤害减少 25%，易伤使受到的攻击伤害增加 50%。能力牌、技能牌、独立效果和异常引爆按原伤害结算。</li>'+
     '<li><b>脆弱</b> 有脆弱时，攻击牌和技能牌直接提供的格挡先计入敏捷，再减少 '+(100-FRAIL_BLOCK_PERCENT)+'%，每段向下取整。能力牌和其他效果照常给予格挡。玩家回合结束时减 1 层。</li>'+
     '<li><b>活力与敏捷</b> 活力全部用于下一张攻击牌，加到该牌每段基础伤害上。敏捷持续整场战斗，每层调整攻击牌和技能牌提供给自己的每段格挡。</li>'+
     '<li><b>能力 Buff</b> 每项能力持续到战斗结束，首次生效时机可选，后续在回合开始的待结算效果之后生效。单体敌方效果优先作用于原目标，原目标倒下时转向第一个存活敌人。力量的成长值会更新该 Buff 的力量加成。</li>'+
-    '<li><b>多段效果</b> 每项效果按段依次结算。伤害每段计算力量、虚弱、易伤和格挡。敌人被击败后，后续段数跳过该目标。</li>'+
+    '<li><b>多段效果</b> 每项效果按段依次结算。每段攻击独立计算伤害修正和格挡。敌人被击败后，后续段数跳过该目标。</li>'+
     '<li><b>负数效果</b> 负伤害为目标回血，负回复使目标失去生命，负抽牌从手牌右侧弃牌。格挡、能量和普通状态层数最低减到 0，力量和允许负层的自定义状态可以继续降低。</li>'+
     '<li><b>异常引爆</b> '+Object.values(AILMENTS).map(ailmentRule).join('')+' 层数按敌人分别累计，跨回合保留。引爆消耗对应层数并穿透格挡。</li>'+
     '<li><b>自定义状态</b> 敌方行动后统一扣除回合层数。牌型收益在打出符合类型的牌后触发，使用打出前的层数。攻击状态按每段消耗一次，全体攻击的一段共消耗一次。</li>'+
