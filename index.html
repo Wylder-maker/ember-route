@@ -371,7 +371,10 @@ const BASE_MERCHANT_LIMIT = 3;
 const BATTLE_REWARD_SIZE = 3;
 const BATTLE_REWARD_ODDS = [['rare',10],['uncommon',40],['common',50]];
 const ENEMY_KINDS = {normal:'普通敌人',elite:'精英敌人',boss:'首领敌人'};
-const ENEMY_ACTIONS = {attack:'攻击',guard:'格挡',fortify:'格挡并获得 2 力量',weak:'施加虚弱',weaken:'攻击并施加 1 虚弱',vulnerable:'施加易伤'};
+const ENEMY_ACTIONS = {
+  attack:'攻击',guard:'格挡',fortify:'格挡并获得 2 力量',weak:'施加虚弱',weaken:'攻击并施加 1 虚弱',
+  vulnerable:'施加易伤',attackFrail:'攻击并施加 1 层脆弱',frail:'施加脆弱',
+};
 const ENEMY_SHAPES = ['scout','moth','crawler','golem','guard','boss'];
 const MAX_ENEMY_TURNS = 30;
 const MAX_ENEMY_COPIES = 20;
@@ -402,7 +405,8 @@ function startingHp(maxHp,ascension) {
 function merchantLimit(run) {
   return BASE_MERCHANT_LIMIT - Number(run.ascension>=3);
 }
-const STATUSES = {weak:'虚弱', vulnerable:'易伤'};
+const STATUSES = {weak:'虚弱', vulnerable:'易伤', frail:'脆弱'};
+const FRAIL_BLOCK_PERCENT = 70;
 const RELICS = [
   {id:'beacon', name:'余火灯标', icon:'✴', text:'每次战斗开始时获得 6 格挡。'},
   {id:'gyro', name:'铜制陀螺', icon:'◈', text:'每次战斗的首回合多获得 1 能量。'},
@@ -610,7 +614,7 @@ function beginCombat(run) {
   run.battle = {
     turn:1, energy:run.hero.energy + Number(hasRelic(run,'gyro')),
     block:hasRelic(run,'beacon') ? 6 : 0, strength:Number(hasRelic(run,'ember')), vigor:0, dexterity:0,
-    weak:0,vulnerable:0, hand,draw,discard:[],exhaust:[],enemies,log:[],pending:[],buffs:[],
+    weak:0,vulnerable:0,frail:0, hand,draw,discard:[],exhaust:[],enemies,log:[],pending:[],buffs:[],
   };
   returnOverflowToDraw(run.battle);
   run.rounds++;
@@ -829,10 +833,14 @@ function resolveEffectSegment(run,kind,type,amount,targets,segment,vigor=0) {
       break;
     }
     case 'block': {
-      const dexterityApplies = amount>0 && (kind==='attack' || kind==='skill');
+      const directCardBlock = amount>0 && (kind==='attack' || kind==='skill');
       for(const target of targets){
         if(targetHp(run,target)===0) continue;
-        const change = dexterityApplies && target===b ? Math.max(0,amount+(b.dexterity??0)) : amount;
+        let change=amount;
+        if(directCardBlock && target===b){
+          change=Math.max(0,amount+(b.dexterity??0));
+          if(b.frail>0) change=Math.floor(change*FRAIL_BLOCK_PERCENT/100);
+        }
         target.block=Math.max(0,target.block+change);
       }
       break;
@@ -1006,8 +1014,9 @@ function enemyIntent(foe,battle) {
   const descriptions = {
     attack:'攻击 '+damage, guard:'格挡 '+value, fortify:'格挡 '+value+' ＋ 2 力量',
     weak:'施加 '+value+' 虚弱', weaken:'攻击 '+damage+' ＋ 1 虚弱', vulnerable:'施加 '+value+' 易伤',
+    attackFrail:'攻击 '+damage+' ＋ 1 层脆弱', frail:'施加 '+value+' 层脆弱',
   };
-  return {action,value,damage,text:descriptions[action],attack:action==='attack'||action==='weaken'};
+  return {action,value,damage,text:descriptions[action],attack:action==='attack'||action==='weaken'||action==='attackFrail'};
 }
 function endTurn(run) {
   if(run.view!=='combat') return;
@@ -1026,6 +1035,7 @@ function endTurn(run) {
   const turns = b.enemies.filter(foe=>foe.hp>0).map(foe=>({foe,...enemyIntent(foe,b)}));
   b.weak = Math.max(0,b.weak-1);
   b.vulnerable = Math.max(0,b.vulnerable-1);
+  b.frail = Math.max(0,(b.frail??0)-1);
   for(const {foe,action,value,damage,text,attack} of turns){
     foe.block = 0;
     log(run,foe.name+'：'+text+'。');
@@ -1038,6 +1048,8 @@ function endTurn(run) {
     if(action==='weaken') b.weak++;
     if(action==='weak') b.weak+=value;
     if(action==='vulnerable') b.vulnerable+=value;
+    if(action==='attackFrail') b.frail++;
+    if(action==='frail') b.frail+=value;
     foe.step++;
     foe.weak=Math.max(0,foe.weak-1);
     foe.vulnerable=Math.max(0,foe.vulnerable-1);
@@ -1361,7 +1373,8 @@ function rewards() {
       button(quota?'跳过奖励 ↗':'继续 ↗','advance','','button secondary'))+'</div></section>';
 }
 function statuses(actor,id='') {
-  const parts=Object.entries(STATUSES).filter(([id])=>actor[id]>0).map(([id,label])=>'<span>'+label+' '+actor[id]+'</span>');
+  const parts=Object.entries(STATUSES).filter(([id])=>actor[id]>0).map(([id,label])=>
+    '<span'+(id==='frail'?' title="攻击牌和技能牌直接提供的格挡每段减少 '+(100-FRAIL_BLOCK_PERCENT)+'%，每回合减 1 层。"':'')+'>'+label+' '+actor[id]+'</span>');
   for(const [type,ailment] of Object.entries(AILMENTS)){
     if(actor[type]>0) parts.push('<span class="'+type+'" title="'+ailmentRule(ailment)+'">'+ailment.name+' '+actor[type]+' / '+ailment.threshold+'</span>');
   }
@@ -1504,6 +1517,7 @@ function showRules() {
     '<li><b>回合结束</b> 保留牌留在手里，其余手牌进入弃牌堆，随后敌人行动。下回合清空己方格挡、补充能量并正常抽牌，然后结算待生效的效果。能力牌和带消耗的牌本场战斗只用一次。</li>'+
     '<li><b>手牌</b> 上限为 '+HAND_LIMIT+' 张。固有和保留可在工坊设为升级后获得。首回合固有牌优先上手，超出的固有牌放在抽牌堆顶。手牌满时暂停抽牌。</li>'+
     '<li><b>状态</b> 每点力量让每次攻击多造成 1 点伤害。虚弱使攻击伤害减少 25%，易伤使受到的伤害增加 50%。</li>'+
+    '<li><b>脆弱</b> 有脆弱时，攻击牌和技能牌直接提供的格挡先计入敏捷，再减少 '+(100-FRAIL_BLOCK_PERCENT)+'%，每段向下取整。能力牌和其他效果照常给予格挡。玩家回合结束时减 1 层。</li>'+
     '<li><b>活力与敏捷</b> 活力全部用于下一张攻击牌，加到该牌每段基础伤害上。敏捷持续整场战斗，每层调整攻击牌和技能牌提供给自己的每段格挡。</li>'+
     '<li><b>能力 Buff</b> 每项能力持续到战斗结束，首次生效时机可选，后续在回合开始的待结算效果之后生效。单体敌方效果优先作用于原目标，原目标倒下时转向第一个存活敌人。力量的成长值会更新该 Buff 的力量加成。</li>'+
     '<li><b>多段效果</b> 每项效果按段依次结算。伤害每段计算力量、虚弱、易伤和格挡。敌人被击败后，后续段数跳过该目标。</li>'+
@@ -1615,7 +1629,7 @@ function enemyFields(enemy) {
   const countAt=new Map(enemy.spawns.map(({act,node,count})=>[act+'-'+node,count]));
   return input('敌人名称','name',enemy.name,'maxlength="28" required')+
     '<div class="field-grid">'+selectField('敌人类型','enemy-kind',ENEMY_KINDS,enemy.kind)+numberField('基础生命','hp',enemy.hp,1,9999)+'</div>'+
-    '<h3>普通意图</h3><p class="muted">先按顺序执行全部回合一次，再按回合顺序循环已勾选的意图。全不勾选时循环全部回合。</p>'+
+    '<h3>普通意图</h3><p class="muted">先执行全部回合一次，再循环勾选的回合。全不勾选时循环全部回合。「攻击并施加 1 层脆弱」的数值填伤害，「施加脆弱」的数值填层数。</p>'+
     enemyIntentFields(enemy.intents,'normal')+
     '<h3>进阶意图</h3>'+checkField('启用独立进阶意图','use-advanced',enablesAdvanced,'进阶 4 和 5 使用此处的回合和循环设置。')+
     '<fieldset id="advanced-intents" class="enemy-advanced" aria-label="进阶意图回合"'+(enablesAdvanced?'':' hidden disabled')+'>'+enemyIntentFields(enemy.advanced??enemy.intents,'advanced')+'</fieldset>'+
