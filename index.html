@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="一幕制单人构筑卡牌游戏。设计角色和卡牌，带上你的牌组试打一局。">
+  <title>余烬航线</title>
+  <style>:root{font-family:"Microsoft YaHei UI","PingFang SC","Noto Sans CJK SC",system-ui,sans-serif;color:#edf5ee;background:#0b1516;font-size:15px;line-height:1.55;--ink:#edf5ee;--muted:#a2b5b1;--subtle:#7f9692;--border:#314646;--panel:#142425;--accent:#e6c083;--teal:#9ed9cd;--red:#f4a08f}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-width:310px;background:radial-gradient(ellipse at 52% 12%,#172b2c 0%,#0b1516 68%) fixed}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;color:inherit}
+button:disabled{cursor:default;opacity:.47}
+:focus-visible{outline:2px solid #ffe2ab;outline-offset:4px}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{line-height:1.18}
+h1{font-size:clamp(2.1rem,4vw,3.55rem);letter-spacing:-.045em}
+h2{font-size:1.26rem}
+h3{font-size:1.05rem}
+p{color:var(--muted)}
+ul,ol{margin:0}
+.app{width:min(1184px,100% - 48px);margin:auto}
+.masthead{height:74px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;border:0;background:none;padding:0;font-weight:800;letter-spacing:.12em}
+.brand-mark{display:grid;place-items:center;width:36px;aspect-ratio:1;border:1px solid #74978b;color:var(--accent);background:#19312e;font-size:21px;clip-path:polygon(0 0,80% 0,100% 20%,100% 100%,20% 100%,0 80%)}
+.masthead nav,.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nav-button,.tab,.text-button,.list-item{border:1px solid transparent;background:none;border-radius:6px;padding:8px 12px;color:var(--muted)}
+.nav-button:hover,.tab:hover,.text-button:hover,.list-item:hover{color:var(--ink);background:#ffffff08}
+.nav-button[aria-current="page"],.tab[aria-pressed="true"],.list-item[aria-pressed="true"]{border-color:#526c65;color:#e0efe7;background:#233937}
+main{padding:26px 0 34px;min-height:calc(100vh - 144px)}
+main:focus{outline:none}
+footer{max-width:100%;padding:18px 0 28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;border-top:1px solid var(--border);color:var(--subtle);font-size:.8rem;letter-spacing:.08em}
+.publication-note{flex-basis:100%;line-height:1.65;letter-spacing:normal}
+.button{min-height:42px;border-radius:6px;border:1px solid #57716c;padding:8px 14px;background:transparent;color:var(--ink);font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.primary{border-color:#e6c083;background:#e6c083;color:#22231e}
+.primary:hover:not(:disabled){background:#ffe0a7}
+.secondary:hover:not(:disabled){background:#34504c}
+.quiet{border-color:transparent;color:#edaa9e}
+.quiet:hover:not(:disabled){background:#653b35}
+.text-button{font-size:.88rem}
+.overline{color:var(--teal);font-weight:700;letter-spacing:.19em;font-size:.72rem}
+.muted{color:var(--muted);font-size:.88rem}
+.end{justify-content:flex-end;margin-top:20px}
+.hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;min-height:390px;padding:clamp(25px,5vw,68px);border:1px solid #486861;border-radius:12px;background:radial-gradient(ellipse at 75% 51%,#41665b 0,#234542 29%,#172e30 57%,#132426 76%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.3;background:repeating-linear-gradient(0deg,transparent 0 4px,#112b2c 5px 6px);pointer-events:none}
+.hero-copy{max-width:475px;z-index:1}
+.hero h1{font-size:clamp(3.1rem,7.25vw,6rem);line-height:.98;margin:12px 0 20px;text-shadow:0 2px 24px #10191a}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-copy>p:not(.overline){max-width:320px;font-size:1rem;color:#d2e1d7;margin-bottom:20px}
+.hero-art{position:absolute;right:0;top:0;bottom:0;width:61%;overflow:hidden;display:grid;place-items:center;z-index:-1}
+.orbit,.orbit::before,.orbit::after{position:absolute;width:min(77%,430px);aspect-ratio:1;border:1px solid #b3e0cd38;border-radius:50%}
+.orbit::before,.orbit::after{content:"";inset:8%;width:auto}
+.orbit::after{inset:19%;border-style:dashed}
+.star{width:54%;height:82%;background:linear-gradient(145deg,#d9e4aa 7%,#82c1a3 33%,#244648 83%);clip-path:polygon(50% 0,63% 25%,78% 31%,70% 48%,100% 62%,64% 64%,67% 88%,53% 78%,43% 100%,32% 73%,9% 69%,28% 54%,0 37%,34% 38%,29% 18%,46% 24%);opacity:.82}
+.rift{position:absolute;inset:13% 20%;background:linear-gradient(155deg,#e7d997,#79b7a4 46%,#1c393d 83%);clip-path:polygon(48% 0,63% 30%,79% 38%,71% 50%,99% 68%,71% 69%,50% 100%,38% 64%,15% 49%,29% 33%)}
+.rift::after{content:"";position:absolute;inset:9% 11%;background:linear-gradient(140deg,#e5e8ba,#75ac9b 38%,#416260 45%,#162c36 49%,#385558 100%);clip-path:polygon(48% 0,65% 31%,78% 45%,74% 56%,89% 69%,68% 66%,50% 100%,39% 62%,15% 46%,31% 29%)}
+.hero-art>i{position:absolute;display:block;width:7px;aspect-ratio:1;background:#f2d58d;box-shadow:0 0 15px #f3e0a4;transform:rotate(45deg)}
+.hero-art>i:nth-of-type(1){top:21%;left:19%}.hero-art>i:nth-of-type(2){top:72%;left:72%;width:11px}.hero-art>i:nth-of-type(3){top:31%;left:79%;width:5px}.hero-art>i:nth-of-type(4){top:79%;left:34%;width:4px}
+.dispatch{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(220px,1.25fr) auto;gap:22px;align-items:center;margin-top:16px;padding:20px 24px;border:1px solid var(--border);border-radius:10px;background:#152527}
+.dispatch h2{margin-bottom:6px}
+.dispatch p{font-size:.86rem}
+.crew{min-width:0}
+.crew>label{display:block;color:var(--subtle);font-size:.78rem;margin-bottom:4px}
+.crew>select{width:100%;margin-bottom:6px}
+.crew-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;color:var(--teal);font-size:.78rem}
+.crew-stats>span,.relic-pill{border:1px solid #45615b;border-radius:4px;background:#223632;padding:3px 7px}
+.run-header{border:1px solid var(--border);border-radius:10px;background:#112022;padding:12px 16px;margin-bottom:15px}
+.run-meta{display:flex;gap:10px;justify-content:space-between;align-items:center}
+.bullet{margin:0 8px;color:var(--subtle)}
+.hp-text{color:#f3a597;font-variant-numeric:tabular-nums}
+.run-tools{display:flex}
+.route{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));list-style:none;padding:9px 0 0;text-align:center;gap:4px}
+.route li{display:grid;gap:3px;justify-items:center;color:#849997;font-size:.7rem;min-width:0;position:relative}
+.route li:not(:first-child)::before{content:"";height:1px;position:absolute;right:calc(50% + 14px);left:calc(-50% + 10px);top:14px;background:#4b615a}
+.route i{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid #4b615a;font-size:14px;line-height:1;font-style:normal}
+.route .passed{color:#a9c4ba}.route .passed i{background:#294741;border-color:#537d6d}
+.route .current{color:var(--accent);font-weight:700}.route .current i{color:#242518;background:var(--accent);border-color:var(--accent)}
+.stage,.battle,.lab{border:1px solid var(--border);border-radius:11px;background:#152526;padding:clamp(14px,3.6vw,34px)}
+.stage-head .overline,.battle-label .overline{margin-bottom:6px}
+.stage-head h1,.lab-head h1{margin-bottom:9px}
+.stage-head{margin-bottom:20px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:10px}
+.card{--card-hue:#93cac2;display:flex;flex-direction:column;min-height:174px;min-width:0;align-items:center;text-align:center;padding:9px;border:1px solid #4f6d68;border-radius:7px;background:linear-gradient(165deg,#32514d,#172829 36%,#182323);color:var(--ink);gap:3px;font-size:inherit;overflow-wrap:anywhere}
+.card.attack{--card-hue:#f0a48b;border-color:#815f53;background:linear-gradient(165deg,#5a3c32,#302623 36%,#251f1e)}
+.card.power{--card-hue:#cdb8f2;border-color:#76668a;background:linear-gradient(165deg,#51446c,#2d253a 36%,#252031)}
+.card.rare{box-shadow:inset 0 2px #d3ac73}
+.card:hover:not(:disabled):is(button){border-color:var(--card-hue);transform:translateY(-2px)}
+.card.chosen{outline:2px solid var(--accent);outline-offset:-2px;box-shadow:inset 0 0 18px #e6c08333}
+.card-top{width:100%;display:flex;align-items:center;justify-content:space-between;gap:3px}
+.card-cost{font-weight:800;display:grid;place-items:center;background:var(--card-hue);color:#152123;font-variant-numeric:tabular-nums;width:23px;height:23px;border-radius:50%;font-size:.87rem}
+.card-rarity,.card-kind{font-size:.69rem;color:var(--card-hue)}
+.card-symbol{color:var(--card-hue);font-size:1.65rem;line-height:1.05;text-shadow:0 0 15px color-mix(in srgb,var(--card-hue),transparent 45%)}
+.card-name{font-size:.91rem;font-weight:800}
+.card-name em{color:var(--accent);font-style:normal}
+.card-text{display:block;margin-top:4px;border-top:1px solid #ffffff24;padding:6px 0 0;width:100%;color:#d2d9d3;font-size:.74rem;line-height:1.45}
+.card-text b{color:var(--ink)}
+.card-keyword-text{display:inline-block;margin-top:4px;color:var(--card-hue);font-weight:700}
+.battle{padding:0;overflow:hidden}
+.battle-label{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.battle-label h1{font-size:1.52rem}
+.turn{color:var(--accent);font-size:.86rem;border:1px solid #675942;padding:4px 8px;border-radius:5px}
+.arena{min-height:207px;display:grid;grid-template-columns:minmax(105px,.85fr) minmax(0,1.15fr);align-items:end;gap:8px;padding:10px min(6vw,55px) 13px;border-block:1px solid #3e5250;background:radial-gradient(ellipse at 52% 82%,#42615577 0,transparent 57%),linear-gradient(149deg,#253f3f,#112124 70%);position:relative;isolation:isolate}
+.arena::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.45;background:linear-gradient(160deg,transparent 0 31%,#526854 32%,transparent 33% 58%,#334c45 59%,transparent 60%),repeating-linear-gradient(94deg,#789b8e0f 0 20px,transparent 20px 44px);clip-path:polygon(0 0,100% 0,100% 84%,0 66%)}
+.enemies{display:flex;gap:14px;justify-content:space-around;min-width:0}
+.enemy-wrap{width:min(50%,160px);min-width:0}
+.unit{display:grid;justify-items:center;align-content:end;width:min(100%,160px);gap:3px;border:1px solid transparent;padding:4px;border-radius:6px;background:transparent;text-align:center;min-width:0}
+.player{justify-self:center}
+.enemy{width:100%;height:100%;cursor:default}
+.enemy.targetable{cursor:crosshair;border-style:dashed;border-color:#e6c08395;background:#e6c08313}
+.enemy.targetable:hover,.enemy.targetable:focus-visible{background:#e6c08328;border-color:var(--accent)}
+.enemy.fallen{opacity:.38}
+.unit-title{font-size:.82rem;overflow-wrap:anywhere}
+.intent{background:#293f43;color:#bfe8eb;border:1px solid #5c8181;border-radius:4px;padding:2px 5px;font-size:.73rem;text-align:center;line-height:1.35}
+.intent.neutral{color:#bee1c9;border-color:#5f8071}.intent.danger{color:#ffcaba;background:#50342f;border-color:#9c655c}
+.life{position:relative;isolation:isolate;overflow:hidden;width:100%;height:16px;border-radius:4px;background:#3b302f;border:1px solid #ab7266;text-align:center}
+.life i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#80443c,#b45b4c);z-index:-1}
+.life b{display:block;font-size:.66rem;line-height:14px;color:#fff6eb;font-variant-numeric:tabular-nums}
+.statuses{min-height:20px;display:flex;justify-content:center;gap:3px;flex-wrap:wrap;font-size:.65rem;color:#e4dfc6}
+.statuses span{background:#384237;border:1px solid #626b51;border-radius:4px;padding:1px 3px}
+.statuses .bleed{background:#542d31;border-color:#9c5a62;color:#ffd2cc}
+.statuses .frostbite{background:#28444d;border-color:#5b8e9e;color:#caf0fa}
+.avatar-art,.enemy-art{position:relative;display:block;width:96px;max-width:100%;height:92px;filter:drop-shadow(0 0 12px #a3d9ab4d)}
+.avatar-art::before{content:"";position:absolute;inset:0;background:linear-gradient(130deg,#b9e4bc 0,#568c78 45%,#274a49 47%,#18312f 84%);clip-path:polygon(50% 1%,74% 29%,71% 46%,84% 56%,99% 96%,1% 96%,16% 56%,29% 46%,26% 29%)}
+.avatar-art i{position:absolute;inset:21% 32% 38%;background:linear-gradient(120deg,#ecdb99,#4e8d82 52%,#284d52 54%);clip-path:polygon(50% 0,100% 45%,60% 100%,0 70%)}
+.enemy-art{--body:#9b5b65;--light:#e9ab92;--shadow:#3e2537;filter:drop-shadow(0 0 12px #ca99874d)}
+.enemy-art::before{content:"";position:absolute;inset:5% 0;background:linear-gradient(141deg,var(--light),var(--body) 48%,var(--shadow) 49%,var(--body) 90%);clip-path:polygon(11% 23%,37% 26%,50% 4%,74% 27%,98% 25%,86% 56%,70% 67%,82% 98%,50% 82%,22% 98%,30% 67%,12% 57%)}
+.enemy-art i{position:absolute;display:block;aspect-ratio:1;background:var(--light);border:2px solid var(--body);transform:rotate(45deg);width:20%;left:40%;top:33%;box-shadow:0 0 10px var(--light)}
+.enemy-art i:nth-child(2){width:7%;left:27%;top:52%}.enemy-art i:nth-child(3){width:7%;left:66%;top:52%}
+.moth{--body:#698168;--light:#d9cd8b;--shadow:#34504b}.moth::before{clip-path:polygon(1% 10%,37% 24%,50% 10%,63% 24%,99% 10%,93% 55%,72% 73%,49% 84%,27% 73%,7% 55%)}
+.crawler{--body:#668892;--light:#b0dcc4;--shadow:#33394d}.crawler::before{clip-path:polygon(20% 39%,41% 16%,65% 18%,79% 38%,100% 83%,74% 71%,70% 93%,55% 74%,42% 94%,30% 70%,0 84%)}
+.golem,.guard{--body:#526a9c;--light:#b4d8e5;--shadow:#303452}.golem::before,.guard::before{clip-path:polygon(50% 0,78% 19%,87% 37%,100% 70%,79% 89%,62% 80%,49% 100%,36% 80%,20% 89%,0 70%,13% 37%,22% 19%)}
+.boss{--body:#8f668e;--light:#d7b0e0;--shadow:#352640;width:114px}.boss::before{clip-path:polygon(50% 0,63% 27%,90% 4%,82% 41%,100% 65%,78% 65%,82% 96%,62% 78%,50% 100%,37% 78%,18% 96%,22% 65%,0 65%,18% 41%,10% 4%,37% 27%)}
+.battle-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid var(--border)}
+.resource{display:flex;align-items:center;gap:7px;font-size:.86rem;color:var(--accent)}
+.resource b{font-size:1.3rem}
+.energy-icon{display:grid;width:29px;aspect-ratio:1;place-items:center;border:1px solid #977746;border-radius:50%;background:#443c2a}
+.piles{display:flex;flex-wrap:wrap}
+.piles button{padding:6px}
+.hand-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px 8px}
+.hand-head h2{font-size:1rem;flex:none}.hand-head h2 span{font-size:.78rem;color:var(--muted);margin-left:3px}
+.hand-head p{font-size:.74rem;text-align:right}
+.hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:9px;padding:4px 16px 16px;min-height:115px}
+.hand .card{min-height:134px}
+.relic-strip{display:flex;flex-wrap:wrap;gap:6px;padding:9px 16px 12px;border-top:1px solid var(--border);font-size:.73rem;color:var(--teal)}
+.deals,.relic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px}
+.deal,.relic{border:1px solid #53716b;border-radius:7px;padding:14px;display:grid;justify-items:start;align-content:start;gap:6px;background:#1e3332;text-align:left}
+.deal:hover:not(:disabled){border-color:var(--accent);background:#2e4540}
+.deal-icon,.relic>span{font-size:1.65rem;color:var(--accent);line-height:1}
+.deal span:not(.deal-icon),.relic p,.deal small{font-size:.82rem;color:var(--muted)}
+.deal small{color:var(--accent)}
+.result{text-align:center}
+.result .crew-stats,.result .actions{justify-content:center;margin-top:18px}
+.result h1{margin:7px 0 9px}
+.result-mark{font-size:3.2rem;color:var(--accent);line-height:1.2}
+.lab-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:22px}
+.lab-layout{display:grid;grid-template-columns:minmax(155px,195px) minmax(0,1fr);gap:21px}
+.lab-sidebar{padding-right:14px;border-right:1px solid var(--border)}
+.tabs{display:flex;gap:4px}
+.item-list{display:grid;gap:4px;margin:10px 0;max-height:440px;overflow:auto;padding:4px}
+.list-item{text-align:left;display:flex;align-items:center;justify-content:space-between;gap:6px;overflow-wrap:anywhere}
+.list-item small{color:var(--subtle);white-space:nowrap}
+.editor{min-width:0}
+.editor h2{margin:5px 0 15px}
+.editor h3{margin:17px 0 5px}
+.field{display:grid;gap:4px;color:var(--muted);font-size:.82rem;margin:0 0 10px;min-width:0}
+.field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:8px}
+input:not([type="checkbox"]),select,textarea{min-width:0;min-height:36px;border-radius:5px;border:1px solid #57716c;background:#102022;color:var(--ink);padding:5px 8px}
+input[type="checkbox"]{accent-color:var(--accent);width:17px;height:17px;margin:0}
+textarea{resize:vertical}
+.check{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.82rem}
+.card-keywords{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px}
+.deck-table{overflow:auto;margin-top:9px;max-height:360px;border:1px solid var(--border);border-radius:6px}
+table{border-collapse:collapse;width:100%}
+th,td{padding:5px 9px;text-align:left;border-bottom:1px solid var(--border);font-size:.8rem}
+thead th{position:sticky;top:0;background:#29413e;z-index:1}
+tbody th{font-weight:600}
+th small{display:block;color:var(--subtle);font-weight:400}
+td input[type="number"]{width:62px}
+.effects{display:grid;gap:5px;margin:10px 0}
+.effect-row{display:grid;grid-template-columns:1.2fr .8fr .85fr .65fr .95fr 1.1fr auto;gap:7px;align-items:end}
+.effect-row .close{margin-bottom:10px}
+.effect-hits,.effect-upgrade-hits,.effect-timing{min-width:0}
+.effect-target{grid-column:1 / 3;grid-row:2;min-width:0}
+.effect-growth{grid-column:3 / 5;grid-row:2;min-width:0}
+.effect-status{grid-column:1 / -1;grid-row:3;min-width:0}
+.effect-status,.status-trigger-fields{margin:0 0 8px;padding:8px 10px 0;border:1px solid var(--border);border-radius:6px}
+.effect-status legend{padding:0 4px;color:var(--muted);font-size:.78rem}
+.statuses .custom-status{border-color:#8c77a6;background:#433752;color:#efddff}
+#power-editor-help{margin-top:7px}
+.card-preview{display:grid;grid-template-columns:repeat(auto-fit,155px);gap:8px;margin:14px 0 0}
+.form-message{font-size:.86rem;color:#f5a795;margin-top:10px}
+dialog{width:min(680px,100% - 24px);max-height:85dvh;overflow:auto;border:1px solid #617d79;border-radius:12px;background:#152526;color:var(--ink);padding:0;box-shadow:0 20px 80px #0008}
+dialog::backdrop{background:#050b0bce}
+.dialog-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding:12px 17px;background:#1b2e30}
+.dialog-body{padding:15px 17px 20px}
+.close{font-size:1.28rem;padding:1px 9px}
+.rule-list{padding-left:20px;color:var(--muted);display:grid;gap:8px}
+.rule-list b{color:var(--ink)}
+#toast{position:fixed;z-index:4;bottom:18px;right:18px;max-width:calc(100vw - 36px);border:1px solid #ad956c;background:#332f24;color:#fff0d4;border-radius:7px;padding:10px 14px;box-shadow:0 5px 24px #0005}
+@media(max-width:840px){.dispatch{grid-template-columns:1fr 1fr}.dispatch>.actions{grid-column:2}.hero-art{width:66%}}
+@media(max-width:570px){.app{width:calc(100% - 20px)}.masthead{height:60px}.nav-button{padding:5px 7px}.masthead nav{gap:3px}main{padding-top:12px}.hero{min-height:305px;padding:21px}.hero-art{width:85%;opacity:.58;right:-18%}.dispatch{grid-template-columns:1fr;padding:15px;gap:10px}.dispatch>.actions{grid-column:1}.lab-head{display:block}.lab-head .actions{margin-top:12px}.lab-layout{display:block}.lab-sidebar{border-right:0;border-bottom:1px solid var(--border);padding:0 0 12px;margin-bottom:14px}.item-list{grid-template-columns:1fr 1fr;max-height:150px}.route li{font-size:.60rem}.route i{width:23px;height:23px}.route li:not(:first-child)::before{right:calc(50% + 12px);left:calc(-50% + 8px);top:11px}.run-header{padding:8px}.arena{padding-inline:8px}.enemies{gap:4px}.unit{padding:2px}.enemy-wrap{width:57%}.hand{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));padding:4px 8px 10px;gap:6px}.hand-head,.battle-bar{padding-inline:8px}.button{padding-inline:9px}.effect-row{grid-template-columns:1fr .8fr .8fr auto;gap:4px}.effect-row .field{font-size:.72rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+@media(max-width:900px){
+  .effect-row{grid-template-columns:1fr .8fr .8fr auto}
+  .effect-hits{grid-column:1;grid-row:2}
+  .effect-upgrade-hits{grid-column:2;grid-row:2}
+  .effect-timing{grid-column:3/-1;grid-row:2}
+  .effect-row .close{grid-column:4;grid-row:1}
+  .effect-target{grid-column:1 / 3;grid-row:3}
+  .effect-growth{grid-column:3 / -1;grid-row:3}
+  .effect-status{grid-row:4}
+}
+@media(max-width:570px){
+  .card-preview{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+}
+.touch-hint,.touch-battle-controls{display:none}
+
+@media (max-width:640px), (max-height:500px) and (pointer:coarse){
+  body{min-width:0;background-attachment:scroll}
+  .app{
+    width:100%;
+    padding:env(safe-area-inset-top) max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left))
+  }
+  main{min-height:calc(100dvh - 130px);padding-bottom:18px}
+  footer{padding-bottom:max(16px,env(safe-area-inset-bottom));gap:8px}
+  .brand,.nav-button,.button,.text-button,.tab,.list-item{min-height:44px}
+  .brand{gap:6px;letter-spacing:.06em}
+  .brand-mark{width:30px}
+  .hero{min-height:260px;padding:18px}
+  .hero h1{font-size:clamp(2.7rem,11vw,3.8rem)}
+  .hero-copy>p:not(.overline){margin-bottom:14px}
+  .actions{gap:6px}
+  .stage,.lab{padding:12px}
+  .stage-head{margin-bottom:13px}
+  .cards-grid,.deals,.relic-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,128px),1fr));gap:7px}
+  .run-header{margin-bottom:8px}
+  .run-meta{gap:4px}
+  .run-meta>div:first-child{overflow-wrap:anywhere}
+  .run-tools{flex-shrink:0}
+  .run-tools .text-button{padding-inline:5px}
+  .route{padding-top:3px}
+  .route li{line-height:1.25;overflow-wrap:anywhere}
+  .battle{overflow:visible}
+  .battle-label{padding:8px 10px}
+  .battle-label .overline{margin-bottom:3px}
+  .battle-label h1{font-size:1.22rem}
+  .arena{min-height:136px;grid-template-columns:minmax(80px,.8fr) minmax(0,1.2fr);padding:5px 7px}
+  .avatar-art,.enemy-art{width:64px;height:56px}
+  .enemy-wrap{width:min(100%,125px)}
+  .battle-bar{gap:2px;padding:0 7px}
+  .battle-bar .resource,.desktop-end-turn,.desktop-hint{display:none}
+  .battle-bar .text-button{padding-inline:5px;white-space:nowrap}
+  .hand-head{padding:7px 8px 2px;align-items:baseline}
+  .touch-hint{display:inline}
+  .hand{
+    grid-template-columns:none;
+    grid-auto-flow:column;
+    grid-auto-columns:min(45%,155px);
+    min-height:0;
+    gap:7px;
+    padding:5px 8px 9px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scroll-padding-inline:8px;
+    scrollbar-width:thin;
+    scrollbar-color:#67827b #142425
+  }
+  .hand .card{min-height:135px;padding:7px}
+  .hand .card:hover:not(:disabled){transform:none}
+  .hand .muted{padding-top:5px}
+  .touch-battle-controls{
+    display:flex;
+    position:sticky;
+    z-index:3;
+    bottom:0;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:6px 8px max(6px,env(safe-area-inset-bottom));
+    border-top:1px solid #57716c;
+    border-radius:0 0 10px 10px;
+    background:#172a2b;
+    box-shadow:0 -5px 14px #0b15164d
+  }
+  .lab-layout{display:block}
+  .lab-sidebar{border-right:0;border-bottom:1px solid var(--border);padding:0 0 12px;margin-bottom:14px}
+  .lab .item-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;max-height:150px}
+  .field-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,116px),1fr));gap:6px}
+  input:not([type="checkbox"]),select,textarea{min-height:44px;width:100%;font-size:16px}
+  .deck-table{overscroll-behavior-inline:contain}
+  .check{min-height:38px}
+  td input[type="number"]{width:60px}
+  dialog{max-height:calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
+  .dialog-head,.dialog-body{padding:8px 10px 12px}
+  #toast{bottom:calc(64px + env(safe-area-inset-bottom));right:10px;max-width:calc(100vw - 20px)}
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="masthead">
+      <button class="brand" data-action="home" aria-label="余烬航线首页"><span class="brand-mark" aria-hidden="true">✦</span><span>余烬航线</span></button>
+      <nav aria-label="视图"><button id="nav-game" class="nav-button" data-action="game">冒险</button><button id="nav-lab" class="nav-button" data-action="lab">设计工坊</button></nav>
+    </header>
+    <main id="screen" tabindex="-1"></main>
+    <footer>
+      <span>余烬航线</span><span>一幕制构筑卡牌游戏</span>
+      <p class="publication-note">本游戏为本人的练手作，参考了杀戮尖塔2的玩法和黑夜君临的角色设计，如有侵权会立即删除，禁止用于商业用途，未经作者本人同意禁止转载</p>
+    </footer>
+  </div>
+  <dialog id="dialog" aria-labelledby="dialog-title"></dialog>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <input id="import-file" type="file" accept=".json,application/json" hidden>
+  <script>const KINDS = {attack:'攻击', skill:'技能', power:'能力'};
+const RARITIES = {common:'普通', uncommon:'罕见', rare:'稀有'};
+const TARGETS = {single:'敌人（单体）', self:'自己', all:'敌方全体'};
+const HAND_LIMIT = 10;
+const MAX_EFFECT_HITS = 10;
+const MAX_EFFECT_AMOUNT = 99;
+const COMBO_DAMAGE_SEGMENTS = 6;
+const COMBO_CARD_ID = '31ddd293-92e7-47f8-905e-ee884bdcf5c7';
+const SEPPUKU_CARD_ID = '6b8e97b8-10c6-416b-8115-b20518ed805a';
+const FURNACE_CARD_NAME = '熔炉百相之兽';
+const FURNACE_TEMP_HP = 20;
+const FURNACE_ATTACK_BONUS = 1;
+const FURNACE_END_DAMAGE = 15;
+const DEFAULT_FURNACE_TURNS = 2;
+const VITALITY_CARD_NAME = '活性';
+const VITALITY_REGENERATION = 3;
+const BLOOD_JOY_CARD_ID = 'ba1376f3-408a-49c9-8b55-e4717f16f4d8';
+const AILMENTS = {
+  bleed:{name:'出血',threshold:3,damage:20,vulnerable:0},
+  frostbite:{name:'冻伤',threshold:3,damage:15,vulnerable:2},
+};
+const EFFECTS = {
+  damage:'伤害', block:'格挡', draw:'抽牌', energy:'能量', heal:'回复生命', strength:'力量',
+  vigor:'活力', dexterity:'敏捷',
+  regeneration:'再生',
+  bleedBlock:'出血引爆时获得格挡（能力）',
+  furnaceAspect:'熔炉百相之兽增益',
+  comboEnergy:'每 '+COMBO_DAMAGE_SEGMENTS+' 段伤害回能（能力）',
+  weak:'虚弱', vulnerable:'易伤', bleed:AILMENTS.bleed.name, frostbite:AILMENTS.frostbite.name,
+  status:'施加自定义状态',
+};
+const HOSTILE = ['damage','weak','vulnerable',...Object.keys(AILMENTS)];
+const STATUS_TRIGGERS = {none:'仅记录层数',card:'打出指定牌型',attack:'强化接下来几段攻击',attackBleed:'打出攻击牌施加出血'};
+const STATUS_REWARDS = {block:'格挡',heal:'生命',strength:'力量',draw:'抽牌',energy:'能量'};
+const GROWTH_EFFECTS = ['damage','block','energy','heal','strength'];
+const MAX_POWER_GROWTH = 99;
+const ROOMS = [
+  {type:'combat', name:'断桥哨口', icon:'⚔'},
+  {type:'combat', name:'黑潮浅滩', icon:'⚔'},
+  {type:'merchant', name:'漂流商站', icon:'◇'},
+  {type:'combat', name:'水晶回廊', icon:'⚔'},
+  {type:'chest', name:'密封货舱', icon:'▣'},
+  {type:'combat', name:'守门者', icon:'⚔'},
+  {type:'boss', name:'黑潮核心', icon:'✷'},
+];
+const STATUSES = {weak:'虚弱', vulnerable:'易伤'};
+const RELICS = [
+  {id:'beacon', name:'余火灯标', icon:'✴', text:'每次战斗开始时获得 6 格挡。'},
+  {id:'gyro', name:'铜制陀螺', icon:'◈', text:'每次战斗的首回合多获得 1 能量。'},
+  {id:'logbook', name:'涂改航海图', icon:'⌘', text:'每次战斗的首回合多抽 1 张牌。'},
+  {id:'ember', name:'灼热炉芯', icon:'✹', text:'每次战斗开始时获得 1 力量。'},
+  {id:'salve', name:'盐雾药瓶', icon:'✚', text:'每场战斗获胜后回复 4 点生命。'},
+  {id:'seal', name:'蜡封徽章', icon:'⊕', text:'拾取时增加 7 点生命上限，并回复 7 点生命。'},
+];
+const FOES = {
+  0:[['锈壳斥候',31,'scout',[['attack',7],['guard',6],['attack',10]]]],
+  1:[['盐雾飞虱',20,'moth',[['attack',5],['attack',8],['guard',5]]],['盐滩拟形虫',23,'crawler',[['guard',5],['attack',8],['attack',6]]]],
+  3:[['辉晶棱兽',51,'golem',[['attack',11],['fortify',8],['attack',15],['weak',2]]]],
+  5:[['沉钟执役',44,'guard',[['attack',10],['fortify',6],['attack',17]]],['警戒孢球',22,'moth',[['guard',5],['attack',7],['weaken',5]]]],
+  6:[['黑潮核心',101,'boss',[['attack',14],['fortify',12],['weaken',13],['attack',22],['vulnerable',2]]]],
+};
+
+function sampleDesign() {
+  const card = (id,name,kind,cost,effects,rarity='common',target='single') => ({
+    id,name,kind,cost,rarity,target,effects:effects.map(([type,amount,upgrade])=>({type,amount,upgrade}))
+  });
+  const cards = [
+    card('jolt','火花突刺','attack',1,[['damage',6,3]]),
+    card('brace','横臂格挡','skill',1,[['block',6,3]]),
+    card('flare','照明焰','attack',1,[['damage',8,3],['vulnerable',1,1]]),
+    card('a1','磁弧扫掠','attack',1,[['damage',7,3]],'common','all'),
+    card('a2','破窗锤','attack',2,[['damage',18,5]]),
+    card('a3','回火','attack',0,[['damage',4,2]]),
+    card('a4','卸力回身','skill',1,[['block',8,3],['draw',1,0]]),
+    card('a5','应急绷带','skill',1,[['heal',5,2]],'common'),
+    card('a6','夹层线路','skill',0,[['draw',2,1]],'common'),
+    card('a7','偏转波','skill',1,[['block',8,2],['weak',2,1]],'uncommon','all'),
+    card('a8','热启动','power',1,[['strength',2,1]],'uncommon'),
+    card('a9','夹击协议','attack',1,[['damage',11,4],['weak',1,1]],'uncommon'),
+    card('b1','逆向充电','skill',0,[['energy',1,1],['draw',1,0]],'uncommon'),
+    card('b2','熔流贯穿','attack',2,[['damage',18,6],['vulnerable',2,1]],'rare','all'),
+    card('b3','深海反应堆','power',1,[['strength',4,2],['block',8,4]],'rare'),
+  ];
+  cards.find(c=>c.id==='a5').exhaust = true;
+  return {version:1, cards, heroes:[{
+    id:'sample', name:'拾火者', description:'用应急工具和失落技术穿过封锁线。示例角色，可在工坊里编辑。',
+    hp:68, energy:3, draw:5, deck:[{id:'jolt',count:4},{id:'brace',count:4},{id:'flare',count:1}],
+    pool:cards.slice(3).map(c=>c.id)
+  }]};
+}
+
+function shuffle(items, random=Math.random) {
+  const result = [...items];
+  for(let i=result.length-1;i>0;i--){
+    const j = Math.floor(random()*(i+1));
+    [result[i],result[j]] = [result[j],result[i]];
+  }
+  return result;
+}
+
+function offerCards(run, limit) {
+  const available = run.design.cards.filter(card=>run.hero.pool.includes(card.id));
+  const byRarity = Object.fromEntries(Object.keys(RARITIES).map(r=>[r,shuffle(available.filter(c=>c.rarity===r))]));
+  const picks = [];
+  while(picks.length<limit && Object.values(byRarity).some(list=>list.length)){
+    const bid = Math.random();
+    const order = bid<.55 ? ['common','uncommon','rare'] : bid<.95 ? ['uncommon','common','rare'] : ['rare','uncommon','common'];
+    const bucket = order.find(r=>byRarity[r].length);
+    picks.push(byRarity[bucket].pop().id);
+  }
+  return picks;
+}
+
+function newRun(design, heroId) {
+  const snapshot = structuredClone(design);
+  const hero = snapshot.heroes.find(h=>h.id===heroId);
+  const run = {design:snapshot, hero, hp:hero.hp, maxHp:hero.hp, room:-1, deck:[], relics:[], view:'draft', nextUid:0, rounds:0, wins:0};
+  for(const entry of hero.deck){
+    for(let i=0;i<entry.count;i++) addCard(run,entry.id);
+  }
+  run.options = offerCards(run,10);
+  run.picks = [];
+  return run;
+}
+
+function addCard(run,id) {
+  run.deck.push({id, uid:++run.nextUid, upgraded:false});
+}
+function amountOf(effect,entry={}) {
+  return effect.amount + (entry.upgraded ? effect.upgrade : 0);
+}
+function hitsOf(effect,entry={}) {
+  return (effect.hits ?? 1) + (entry.upgraded ? (effect.upgradeHits ?? 0) : 0);
+}
+function canGrowEffect(kind,type) {
+  return kind==='power' && GROWTH_EFFECTS.includes(type);
+}
+function powerAmount(buff,activations=buff.activations) {
+  return amountOf(buff.effect,buff.entry) + (buff.effect.growth ?? 0)*activations;
+}
+function cardCost(card,entry={}) {
+  return Math.max(0,card.cost-(entry.upgraded ? (card.upgradeCostReduction ?? 0) : 0));
+}
+function hasCardKeyword(card,entry,keyword) {
+  return Boolean(entry.upgraded && card[keyword]);
+}
+function canUpgrade(card) {
+  return Boolean(card.innate || card.retain || cardCost(card,{upgraded:true})<card.cost ||
+    card.effects.some(effect=>effect.upgrade!==0 || effect.upgradeHits>0));
+}
+function getCard(run,entry) {
+  return run.design.cards.find(c=>c.id===entry.id);
+}
+function returnOverflowToDraw(battle) {
+  if(battle.hand.length<=HAND_LIMIT) return;
+  // The draw pile is read from the end, so preserve the overflow's hand order in reverse.
+  battle.draw.push(...battle.hand.splice(HAND_LIMIT).reverse());
+}
+function drawCards(battle,count) {
+  for(let i=0;i<count && battle.hand.length<HAND_LIMIT;i++){
+    if(!battle.draw.length){
+      if(!battle.discard.length) return;
+      battle.draw = shuffle(battle.discard);
+      battle.discard = [];
+    }
+    battle.hand.push(battle.draw.pop());
+  }
+}
+function hasRelic(run,id) { return run.relics.includes(id); }
+function changeHp(run,value) {
+  const previous = run.hp;
+  run.hp = Math.max(0,Math.min(run.maxHp,previous+value));
+  return run.hp-previous;
+}
+function log(run,message) {
+  run.battle.log.unshift(message);
+  run.battle.log = run.battle.log.slice(0,18);
+}
+function beginCombat(run) {
+  const enemies = FOES[run.room].map(([name,hp,shape,pattern])=>({name,hp,maxHp:hp,shape,pattern,step:0,block:0,strength:0,weak:0,vulnerable:0}));
+  const hand = [];
+  const draw = [];
+  for(const entry of shuffle(run.deck)){
+    (hasCardKeyword(getCard(run,entry),entry,'innate') ? hand : draw).push(entry);
+  }
+  run.battle = {
+    turn:1, energy:run.hero.energy + Number(hasRelic(run,'gyro')),
+    block:hasRelic(run,'beacon') ? 6 : 0, strength:Number(hasRelic(run,'ember')), vigor:0, dexterity:0,
+    weak:0,vulnerable:0, hand,draw,discard:[],exhaust:[],enemies,log:[],pending:[],buffs:[],
+  };
+  returnOverflowToDraw(run.battle);
+  run.rounds++;
+  const openingSize = run.hero.draw + Number(hasRelic(run,'logbook'));
+  drawCards(run.battle,openingSize-hand.length);
+  log(run,'第 1 回合开始。');
+  run.view = 'combat';
+}
+function advance(run) {
+  run.room++;
+  delete run.battle;
+  const room = ROOMS[run.room];
+  if(!room){ run.view='victory'; return; }
+  if(room.type==='merchant'){
+    run.view='merchant';
+    run.taken=[];
+    run.merchantCards=offerCards(run,3);
+    return;
+  }
+  if(room.type==='chest'){
+    run.view='chest';
+    run.chest = shuffle(RELICS.filter(r=>!hasRelic(run,r.id))).slice(0,2).map(r=>r.id);
+    return;
+  }
+  beginCombat(run);
+}
+function gainRelic(run,id) {
+  if(!id || hasRelic(run,id)) return;
+  run.relics.push(id);
+  if(id==='seal'){ run.maxHp+=7; changeHp(run,7); }
+}
+function scaledDamage(base,attacker,defender,attack=true) {
+  let amount = base + (attack ? attacker.strength : 0);
+  if(attack && attacker.weak>0) amount *= .75;
+  if(defender.vulnerable>0) amount *= 1.5;
+  return Math.max(0,Math.floor(amount));
+}
+function strike(defender,amount,bypassBlock=false) {
+  const blocked = bypassBlock ? 0 : Math.min(defender.block,amount);
+  defender.block -= blocked;
+  const lost = Math.min(defender.hp,amount-blocked);
+  defender.hp -= lost;
+  return lost;
+}
+function targetHp(run,target) {
+  return target===run.battle ? run.hp : target.hp;
+}
+function targetName(run,target) {
+  return target===run.battle ? run.hero.name : target.name;
+}
+function changeTargetHp(run,target,value) {
+  if(target===run.battle) return changeHp(run,value);
+  const previous = target.hp;
+  target.hp = Math.max(0,Math.min(target.maxHp,previous+value));
+  return target.hp-previous;
+}
+function strikeTarget(run,target,amount,bypassBlock=false) {
+  if(target!==run.battle) return strike(target,amount,bypassBlock);
+  const blocked = bypassBlock ? 0 : Math.min(target.block,amount);
+  target.block-=blocked;
+  let damage = amount-blocked;
+  for(const aspect of target.furnaceAspects ?? []){
+    const absorbed = Math.min(aspect.hp,damage);
+    aspect.hp-=absorbed;
+    damage-=absorbed;
+    if(damage===0) break;
+  }
+  const previous = run.hp;
+  changeHp(run,-damage);
+  return previous-run.hp;
+}
+function addFurnaceAspect(run,turns) {
+  if(turns<=0) return;
+  (run.battle.furnaceAspects ??= []).push({turns,hp:FURNACE_TEMP_HP});
+  log(run,'「'+FURNACE_CARD_NAME+'」生效，获得 '+FURNACE_TEMP_HP+' 点临时生命，持续 '+turns+' 回合。');
+}
+function tickFurnaceAspects(run) {
+  const battle = run.battle;
+  if(!battle.furnaceAspects?.length) return;
+  const active = battle.furnaceAspects;
+  battle.furnaceAspects=active.filter(aspect=>--aspect.turns>0);
+  for(const aspect of active){
+    if(aspect.turns>0) continue;
+    const targets=battle.enemies.filter(foe=>foe.hp>0);
+    if(!targets.length) break;
+    log(run,'「'+FURNACE_CARD_NAME+'」结束，对敌方全体造成 '+FURNACE_END_DAMAGE+' 点伤害。');
+    resolveEffectSegment(run,'status','damage',FURNACE_END_DAMAGE,targets,'');
+  }
+}
+function addCustomStatus(run,actor,rule,layers) {
+  const key = JSON.stringify([rule.name,rule.decay,rule.keepNegative,rule.trigger,
+    rule.cardKind,rule.rewardType,rule.rewardAmount,rule.attackHits,rule.attackBonus,rule.bleedAmount]);
+  const statuses = actor.customStatuses ??= [];
+  const existing = statuses.find(item=>item.key===key);
+  if(!existing && layers<=0 && !rule.keepNegative) return;
+  let status = existing;
+  if(!status){
+    status={key,rule,layers:0,hitsLeft:0};
+    statuses.push(status);
+  }
+  const previous = status.layers;
+  status.layers=rule.keepNegative ? previous+layers : Math.max(0,previous+layers);
+  if(rule.trigger==='attack' && (!existing || layers>0)) status.hitsLeft+=rule.attackHits;
+  if(!rule.keepNegative && status.layers===0) actor.customStatuses=statuses.filter(item=>item!==status);
+  log(run,targetName(run,actor)+(layers<0?'减少':'获得')+'「'+rule.name+'」'+Math.abs(status.layers-previous)+' 层，总层数 '+status.layers+'。');
+}
+function decayCustomStatuses(actor) {
+  if(!actor.customStatuses) return;
+  actor.customStatuses=actor.customStatuses.filter(status=>{
+    status.layers-=status.rule.decay;
+    return status.rule.keepNegative || status.layers>0;
+  });
+}
+function attackStatusBonus(actor,consume=false) {
+  let bonus=0;
+  for(const status of actor.customStatuses ?? []){
+    if(status.rule.trigger!=='attack' || status.hitsLeft<=0) continue;
+    bonus+=status.layers*status.rule.attackBonus;
+    if(consume) status.hitsLeft--;
+  }
+  return bonus;
+}
+function cardStatusRewards(battle,kind) {
+  return [battle,...battle.enemies].flatMap(actor=>(actor.customStatuses??[])
+    .filter(status=>status.rule.trigger==='card' && status.rule.cardKind===kind)
+    .map(({rule,layers})=>({actor,rule,amount:layers*rule.rewardAmount})));
+}
+function recordDamageSegments(run,count) {
+  const b = run.battle;
+  for(const buff of b.buffs ?? []){
+    if(buff.effect.type!=='comboEnergy' || !buff.activations) continue;
+    const total = (buff.damageSegments ?? 0)+count;
+    const triggers = Math.floor(total/COMBO_DAMAGE_SEGMENTS);
+    buff.damageSegments=total%COMBO_DAMAGE_SEGMENTS;
+    if(triggers>0){
+      const energy = triggers*powerAmount(buff,0)*hitsOf(buff.effect,buff.entry);
+      b.energy=Math.max(0,b.energy+energy);
+      log(run,'「'+getCard(run,buff.entry).name+'」触发 '+triggers+' 次，能量 '+(energy>=0?'+':'')+energy+'。');
+    }
+  }
+}
+function grantBleedBlock(run,bursts) {
+  const battle = run.battle;
+  for(const buff of battle.buffs ?? []){
+    if(buff.effect.type!=='bleedBlock' || !buff.activations) continue;
+    const block = bursts*amountOf(buff.effect,buff.entry)*hitsOf(buff.effect,buff.entry);
+    resolveEffectSegment(run,'status','block',block,[battle],'');
+    log(run,'「'+getCard(run,buff.entry).name+'」触发 '+bursts+' 次，格挡 '+(block>=0?'+':'')+block+'。');
+  }
+}
+function applyAilment(run,foe,type,amount) {
+  const {name,threshold,damage,vulnerable} = AILMENTS[type];
+  const recipient = targetName(run,foe);
+  const total = Math.max(0,(foe[type] ?? 0) + amount);
+  const bursts = Math.floor(total/threshold);
+  foe[type] = total % threshold;
+  if(bursts===0){
+    log(run,recipient+'的'+name+'累计至 '+foe[type]+' / '+threshold+' 层。');
+    return;
+  }
+  const lost = strikeTarget(run,foe,bursts*damage,true);
+  log(run,recipient+'的'+name+'引爆 '+bursts+' 次，失去 '+lost+' 点生命。');
+  if(type==='bleed') grantBleedBlock(run,bursts);
+  if(foe!==run.battle && lost>0) recordDamageSegments(run,Math.ceil(lost/damage));
+  if(vulnerable>0 && targetHp(run,foe)>0){
+    foe.vulnerable += bursts*vulnerable;
+    log(run,recipient+'获得 '+(bursts*vulnerable)+' 回合易伤。');
+  }
+}
+function resolveEffect(run,card,entry,effect,targets,{amount=amountOf(effect,entry),vigor=0}={}) {
+  if(amount===0) return;
+  const hits = hitsOf(effect,entry);
+  for(let hit=1;hit<=hits && run.hp>0;hit++){
+    const segment = hits>1 ? '（第 '+hit+' / '+hits+' 段）' : '';
+    if(effect.type==='status'){
+      for(const target of targets) if(targetHp(run,target)>0) addCustomStatus(run,target,effect.status,amount);
+    } else resolveEffectSegment(run,card.kind,effect.type,amount,targets,segment,vigor);
+  }
+}
+function resolveEffectSegment(run,kind,type,amount,targets,segment,vigor=0) {
+  const b = run.battle;
+  switch(type){
+    case 'damage': {
+      const attack = kind==='attack';
+      const bonus = attack && amount>0 && targets.some(target=>targetHp(run,target)>0)
+        ? vigor+attackStatusBonus(b,true)+(b.furnaceAspects?.length??0)*FURNACE_ATTACK_BONUS : 0;
+      let damagedEnemy = false;
+      for(const target of targets){
+        if(targetHp(run,target)===0) continue;
+        const recipient = targetName(run,target);
+        if(amount<0){
+          const recovered = changeTargetHp(run,target,-amount);
+          log(run,recipient+'回复 '+recovered+' 点生命'+segment+'。');
+          continue;
+        }
+        const lost = strikeTarget(run,target,scaledDamage(amount+bonus,b,target,attack));
+        if(target!==b && lost>0) damagedEnemy=true;
+        log(run,recipient+'损失 '+lost+' 点生命'+segment+'。');
+      }
+      if(damagedEnemy) recordDamageSegments(run,1);
+      break;
+    }
+    case 'block': {
+      const dexterityApplies = amount>0 && (kind==='attack' || kind==='skill');
+      for(const target of targets){
+        if(targetHp(run,target)===0) continue;
+        const change = dexterityApplies && target===b ? Math.max(0,amount+(b.dexterity??0)) : amount;
+        target.block=Math.max(0,target.block+change);
+      }
+      break;
+    }
+    case 'draw':
+      if(amount<0) b.discard.push(...b.hand.splice(Math.max(0,b.hand.length+amount)));
+      else drawCards(b,amount);
+      break;
+    case 'energy': b.energy=Math.max(0,b.energy+amount); break;
+    case 'regeneration': b.regeneration=Math.max(0,(b.regeneration??0)+amount); break;
+    case 'furnaceAspect': addFurnaceAspect(run,amount); break;
+    case 'heal':
+      for(const target of targets){
+        if(targetHp(run,target)===0) continue;
+        const change = changeTargetHp(run,target,amount);
+        if(change<0) log(run,targetName(run,target)+'失去 '+(-change)+' 点生命'+segment+'。');
+      }
+      break;
+    case 'strength':
+      for(const target of targets) if(targetHp(run,target)>0) target.strength+=amount;
+      break;
+    case 'vigor':
+    case 'dexterity':
+      b[type]=(b[type]??0)+amount;
+      break;
+    case 'weak':
+    case 'vulnerable':
+      for(const target of targets) if(targetHp(run,target)>0) target[type]=Math.max(0,target[type]+amount);
+      break;
+    case 'bleed':
+    case 'frostbite':
+      for(const target of targets) if(targetHp(run,target)>0) applyAilment(run,target,type,amount);
+      break;
+  }
+}
+function requiresTarget(card) {
+  return card.effects.some(effect=>effectTarget(card,effect)==='single');
+}
+function onlySelfTarget(type) {
+  return type==='draw' || type==='energy' || type==='vigor' || type==='dexterity' || type==='comboEnergy' ||
+    type==='furnaceAspect' || type==='regeneration' || type==='bleedBlock';
+}
+function effectTarget(card,effect) {
+  return effect.target ?? (HOSTILE.includes(effect.type) ? (card.target ?? 'single') : 'self');
+}
+function updateFurnaceCard(card) {
+  if(card.effects.some(effect=>effect.type==='furnaceAspect')) return card;
+  const placeholders=card.effects.filter(effect=>effect.type==='status' && effectTarget(card,effect)==='self' &&
+    effect.status.decay>0 && !effect.status.keepNegative && effect.amount>0);
+  const placeholder=placeholders.find(effect=>effect.status.name===FURNACE_CARD_NAME) ??
+    (placeholders.length===1 ? placeholders[0] : null);
+  const furnace={type:'furnaceAspect',target:'self',amount:DEFAULT_FURNACE_TURNS,upgrade:0,nextTurn:false};
+  if(placeholder){
+    const duration=entry=>Math.min(MAX_EFFECT_AMOUNT,Math.max(1,
+      Math.ceil(amountOf(placeholder,entry)*hitsOf(placeholder,entry)/placeholder.status.decay)));
+    furnace.amount=duration({});
+    furnace.upgrade=duration({upgraded:true})-furnace.amount;
+    furnace.nextTurn=placeholder.nextTurn??false;
+    return {...card,effects:card.effects.map(effect=>effect===placeholder ? furnace : effect)};
+  }
+  return card.effects.length<6 ? {...card,effects:[...card.effects,furnace]} : card;
+}
+function updateVitalityCard(card) {
+  if(card.effects.some(effect=>effect.type==='regeneration')) return card;
+  return {...card,effects:[{type:'regeneration',target:'self',amount:VITALITY_REGENERATION,upgrade:0,nextTurn:false}]};
+}
+function updateBloodJoyCard(card) {
+  if(card.effects.some(effect=>effect.type==='bleedBlock')) return card;
+  return {...card,effects:[{type:'bleedBlock',target:'self',amount:6,upgrade:2,nextTurn:false}]};
+}
+function targetsFor(battle,card,effect,enemyIndex,retarget=false) {
+  const mode = effectTarget(card,effect);
+  if(mode==='self') return [battle];
+  if(mode==='all') return battle.enemies.filter(foe=>foe.hp>0);
+  const target = battle.enemies[enemyIndex];
+  if(target?.hp>0) return [target];
+  const fallback = retarget ? battle.enemies.find(foe=>foe.hp>0) : null;
+  return fallback ? [fallback] : [];
+}
+function triggerPowerBuff(run,card,buff) {
+  const b = run.battle;
+  const {entry,effect,enemyIndex} = buff;
+  if(effect.type==='comboEnergy' || effect.type==='bleedBlock'){
+    buff.activations=1;
+    return;
+  }
+  const amount = powerAmount(buff);
+  const targets = targetsFor(b,card,effect,enemyIndex,true);
+  // Growing Strength replaces its previous contribution. Fixed gains stack as usual.
+  let change = amount;
+  if(effect.type==='strength' && effect.growth){
+    const single = effectTarget(card,effect)==='single';
+    const index = single ? b.enemies.indexOf(targets[0]) : null;
+    if(buff.activations>0 && (!single || buff.strengthTarget===index)) change=effect.growth;
+    if(single) buff.strengthTarget=index;
+  }
+  log(run,'「'+card.name+'」的'+EFFECTS[effect.type]+'生效，每段数值 '+amount+'。');
+  resolveEffect(run,card,entry,effect,targets,{amount:change});
+  buff.activations++;
+}
+function settleBattle(run) {
+  if(run.hp===0){
+    run.view='defeat';
+  } else if(run.battle.enemies.every(foe=>foe.hp===0)){
+    run.wins++;
+    if(hasRelic(run,'salve')) changeHp(run,4);
+    if(ROOMS[run.room].type==='boss') run.view='victory';
+    else {run.view='reward';run.options=offerCards(run,3);}
+  }
+}
+function playCard(run,uid,enemyIndex) {
+  if(run.view!=='combat') return false;
+  const b = run.battle;
+  const index = b.hand.findIndex(entry=>entry.uid===uid);
+  if(index===-1) return false;
+  const entry = b.hand[index];
+  const card = getCard(run,entry);
+  const cost = cardCost(card,entry);
+  if(b.energy<cost) return false;
+  if(requiresTarget(card) && !(b.enemies[enemyIndex]?.hp>0)) return false;
+  const rewards = cardStatusRewards(b,card.kind);
+  const attackBleed = card.kind==='attack' ? (b.customStatuses??[])
+    .filter(status=>status.rule.trigger==='attackBleed' && status.layers>0)
+    .reduce((total,status)=>total+status.rule.bleedAmount,0) : 0;
+  const vigor = card.kind==='attack' ? (b.vigor??0) : 0;
+  if(card.kind==='attack') b.vigor=0;
+  b.energy -= cost;
+  b.hand.splice(index,1);
+  for(const effect of card.effects){
+    if(card.kind==='power' && effect.type!=='furnaceAspect' && effect.type!=='regeneration'){
+      const buff={entry,effect,enemyIndex,activations:0};
+      (b.buffs ??= []).push(buff);
+      if(!effect.nextTurn) triggerPowerBuff(run,card,buff);
+    } else if(effect.nextTurn) (b.pending ??= []).push({entry,effect,enemyIndex,vigor});
+    else resolveEffect(run,card,entry,effect,targetsFor(b,card,effect,enemyIndex),{vigor});
+    if(run.hp===0) break;
+  }
+  (card.exhaust || card.kind==='power' ? b.exhaust : b.discard).push(entry);
+  log(run,'打出「'+card.name+(entry.upgraded?'+':'')+'」。');
+  if(attackBleed>0 && run.hp>0){
+    const enemies = new Set(card.effects.filter(effect=>effectTarget(card,effect)!=='self')
+      .flatMap(effect=>targetsFor(b,card,effect,enemyIndex)));
+    for(const enemy of enemies) applyAilment(run,enemy,'bleed',attackBleed);
+  }
+  for(const {actor,rule,amount} of rewards){
+    if(run.hp===0) break;
+    if(!amount || targetHp(run,actor)===0) continue;
+    log(run,targetName(run,actor)+'触发「'+rule.name+'」，'+STATUS_REWARDS[rule.rewardType]+' '+(amount>0?'+':'')+amount+'。');
+    resolveEffectSegment(run,'status',rule.rewardType,amount,[actor],'');
+  }
+  settleBattle(run);
+  return true;
+}
+function enemyIntent(foe,battle) {
+  const [action,value] = foe.pattern[foe.step % foe.pattern.length];
+  const damage = scaledDamage(value+attackStatusBonus(foe),foe,battle);
+  const descriptions = {
+    attack:'攻击 '+damage, guard:'格挡 '+value, fortify:'格挡 '+value+' ＋ 2 力量',
+    weak:'施加 '+value+' 虚弱', weaken:'攻击 '+damage+' ＋ 1 虚弱', vulnerable:'施加 '+value+' 易伤',
+  };
+  return {action,value,damage,text:descriptions[action],attack:action==='attack'||action==='weaken'};
+}
+function endTurn(run) {
+  if(run.view!=='combat') return;
+  const b = run.battle;
+  const retained = [];
+  for(const entry of b.hand){
+    (hasCardKeyword(getCard(run,entry),entry,'retain') ? retained : b.discard).push(entry);
+  }
+  b.hand = retained;
+  if(b.regeneration>0){
+    const recovered = changeHp(run,b.regeneration);
+    b.regeneration--;
+    log(run,'再生回复 '+recovered+' 点生命，剩余 '+b.regeneration+' 层。');
+  }
+  // Resolve all intents as shown to the player before the enemy phase begins.
+  const turns = b.enemies.filter(foe=>foe.hp>0).map(foe=>({foe,...enemyIntent(foe,b)}));
+  b.weak = Math.max(0,b.weak-1);
+  b.vulnerable = Math.max(0,b.vulnerable-1);
+  for(const {foe,action,value,damage,text,attack} of turns){
+    foe.block = 0;
+    log(run,foe.name+'：'+text+'。');
+    if(attack){
+      attackStatusBonus(foe,true);
+      strikeTarget(run,b,damage);
+    }
+    if(action==='guard' || action==='fortify') foe.block=value;
+    if(action==='fortify') foe.strength+=2;
+    if(action==='weaken') b.weak++;
+    if(action==='weak') b.weak+=value;
+    if(action==='vulnerable') b.vulnerable+=value;
+    foe.step++;
+    foe.weak=Math.max(0,foe.weak-1);
+    foe.vulnerable=Math.max(0,foe.vulnerable-1);
+    if(run.hp===0){run.view='defeat';return;}
+  }
+  for(const actor of [b,...b.enemies]) decayCustomStatuses(actor);
+  b.turn++;
+  run.rounds++;
+  b.block=0;
+  b.energy=run.hero.energy;
+  tickFurnaceAspects(run);
+  if(b.enemies.every(foe=>foe.hp===0)){settleBattle(run);return;}
+  drawCards(b,run.hero.draw);
+  log(run,'第 '+b.turn+' 回合开始。');
+  const pending = b.pending ?? [];
+  b.pending = [];
+  for(const {entry,effect,enemyIndex,vigor} of pending){
+    const card = getCard(run,entry);
+    const targets = targetsFor(b,card,effect,enemyIndex);
+    log(run,'「'+card.name+'」的下回合效果结算。');
+    resolveEffect(run,card,entry,effect,targets,{vigor});
+    if(run.hp===0) break;
+  }
+  for(const buff of b.buffs ?? []){
+    if(run.hp===0) break;
+    triggerPowerBuff(run,getCard(run,buff.entry),buff);
+  }
+  settleBattle(run);
+}
+
+function validateDesign(input) {
+  const reject = (message)=>{ throw new Error(message); };
+  const string = (value,max)=>typeof value==='string' && value.trim().length>0 && value.length<=max;
+  const integer = (value,min,max)=>Number.isInteger(value) && value>=min && value<=max;
+  const optionalBoolean = value=>value===undefined || typeof value==='boolean';
+  const id = (value)=>typeof value==='string' && /^[\w-]{1,64}$/.test(value);
+  if(input?.version!==1 || !Array.isArray(input.cards) || !Array.isArray(input.heroes)) reject('请选择工坊导出的 v1 JSON 文件。');
+  if(input.cards.length>150 || input.heroes.length>30) reject('最多可保存 150 张卡牌和 30 个角色。');
+  const cardIds = new Set();
+  const heroIds = new Set();
+  for(const card of input.cards){
+    if(!card || !id(card.id) || cardIds.has(card.id) || !string(card.name,28)) reject('有卡牌名称、ID 或重复项无效。');
+    if(!Object.hasOwn(KINDS,card.kind) || !Object.hasOwn(RARITIES,card.rarity) || !integer(card.cost,0,9)) reject(card.name+'的类型、稀有度或费用无效。');
+    if(card.target!==undefined && card.target!=='single' && card.target!=='all') reject(card.name+'的旧版目标无效。');
+    if(!Array.isArray(card.effects) || card.effects.length<1 || card.effects.length>6) reject(card.name+'需要 1 至 6 项效果。');
+    if(![card.exhaust,card.innate,card.retain].every(optionalBoolean)) reject(card.name+'的固有、保留或消耗属性无效。');
+    if(card.upgradeCostReduction!==undefined && !integer(card.upgradeCostReduction,0,9)) reject(card.name+'的升级减费无效。');
+    for(const effect of card.effects){
+      if(!effect || !Object.hasOwn(EFFECTS,effect.type) || !integer(effect.amount,-MAX_EFFECT_AMOUNT,MAX_EFFECT_AMOUNT) || !integer(effect.upgrade,-MAX_EFFECT_AMOUNT,MAX_EFFECT_AMOUNT)) reject(card.name+'的效果数值无效。');
+      if(effect.target!==undefined && (!Object.hasOwn(TARGETS,effect.target) || (onlySelfTarget(effect.type) && effect.target!=='self'))) reject(card.name+'的效果目标无效。');
+      if(effect.type==='comboEnergy' && card.kind!=='power') reject(card.name+'的连击回能效果需要能力牌。');
+      if(effect.type==='bleedBlock' && card.kind!=='power') reject(card.name+'的出血格挡效果需要能力牌。');
+      if(effect.type==='furnaceAspect' && (effect.amount<1 || amountOf(effect,{upgraded:true})<1)) reject(card.name+'的熔炉增益至少持续 1 回合。');
+      if(!optionalBoolean(effect.nextTurn)) reject(card.name+'的效果结算时机无效。');
+      if(effect.hits!==undefined && !integer(effect.hits,1,MAX_EFFECT_HITS)) reject(card.name+'的效果段数无效。');
+      if(effect.upgradeHits!==undefined && !integer(effect.upgradeHits,0,MAX_EFFECT_HITS-1)) reject(card.name+'的升级增加段数无效。');
+      if(hitsOf(effect,{upgraded:true})>MAX_EFFECT_HITS) reject(card.name+'的单项效果升级后最多 '+MAX_EFFECT_HITS+' 段。');
+      if(effect.growth!==undefined && (!canGrowEffect(card.kind,effect.type) || !integer(effect.growth,-MAX_POWER_GROWTH,MAX_POWER_GROWTH))) reject(card.name+'的每回合成长无效。');
+      if(effect.type==='status'){
+        const rule=effect.status;
+        if(!rule || !string(rule.name,24) || !integer(rule.decay,0,99) || typeof rule.keepNegative!=='boolean' ||
+          !Object.hasOwn(STATUS_TRIGGERS,rule.trigger)) reject(card.name+'的自定义状态设置无效。');
+        if(rule.trigger==='card' && (!Object.hasOwn(KINDS,rule.cardKind) || !Object.hasOwn(STATUS_REWARDS,rule.rewardType) ||
+          !integer(rule.rewardAmount,1,99) || (effectTarget(card,effect)!=='self' && onlySelfTarget(rule.rewardType)))) reject(card.name+'的状态牌型触发设置无效。');
+        if(rule.trigger==='attack' && (!integer(rule.attackHits,1,MAX_EFFECT_HITS) || !integer(rule.attackBonus,1,99))) reject(card.name+'的状态攻击增益设置无效。');
+        if(rule.trigger==='attackBleed' && (!integer(rule.bleedAmount,1,99) || effectTarget(card,effect)!=='self')) reject(card.name+'的攻击施加出血设置无效。');
+      }
+    }
+    cardIds.add(card.id);
+  }
+  for(const hero of input.heroes){
+    if(!hero || !id(hero.id) || heroIds.has(hero.id) || !string(hero.name,28)) reject('有角色名称、ID 或重复项无效。');
+    if(typeof hero.description!=='string'||hero.description.length>160 || !integer(hero.hp,1,999) || !integer(hero.energy,1,9) || !integer(hero.draw,1,12)) reject(hero.name+'的说明或基础数值无效。');
+    if(!Array.isArray(hero.deck) || !Array.isArray(hero.pool)) reject(hero.name+'的起手牌组或奖励池无效。');
+    const inDeck = new Set();
+    let total=0;
+    for(const entry of hero.deck){
+      if(!entry || !cardIds.has(entry.id) || inDeck.has(entry.id) || !integer(entry.count,1,20)) reject(hero.name+'的起手牌组包含无效卡牌或重复记录。');
+      inDeck.add(entry.id);
+      total+=entry.count;
+    }
+    if(total<1 || total>60) reject(hero.name+'的起手牌组需要 1 至 60 张牌。');
+    if(hero.pool.some(key=>!cardIds.has(key)) || new Set(hero.pool).size!==hero.pool.length) reject(hero.name+'的奖励池包含无效卡牌或重复记录。');
+    heroIds.add(hero.id);
+  }
+  return input;
+}
+
+const PACKAGED_DESIGN = {"version":1,"cards":[{"id":"jolt","name":"打击","kind":"attack","rarity":"common","target":"single","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","amount":6,"upgrade":3,"hits":1,"nextTurn":false}]},{"id":"brace","name":"防御","kind":"skill","rarity":"common","target":"single","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"block","amount":5,"upgrade":3,"hits":1,"nextTurn":false}]},{"id":"flare","name":"居合","kind":"attack","rarity":"common","target":"single","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","amount":8,"upgrade":2,"hits":1,"nextTurn":false},{"type":"vulnerable","amount":1,"upgrade":1,"hits":1,"nextTurn":false}]},{"id":"a1","name":"血刃","kind":"attack","rarity":"common","target":"single","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","amount":8,"upgrade":2,"hits":1,"nextTurn":false},{"type":"bleed","amount":1,"upgrade":1,"hits":1,"nextTurn":false}]},{"id":"a2","name":"冻霜踏地","kind":"attack","rarity":"common","target":"all","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","amount":2,"upgrade":1,"hits":3,"nextTurn":false},{"type":"frostbite","amount":1,"upgrade":0,"hits":2,"nextTurn":false}]},{"id":"a3","name":"妖刀打击","kind":"attack","rarity":"common","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":6,"upgrade":3,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"weak","target":"single","amount":1,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"a4","name":"妖刀防御","kind":"skill","rarity":"common","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"block","target":"self","amount":5,"upgrade":3,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"draw","target":"self","amount":1,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"a5","name":"圣杯瓶","kind":"skill","rarity":"common","target":"single","cost":1,"exhaust":true,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"heal","amount":5,"upgrade":2,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"a6","name":"妖刀精防","kind":"skill","rarity":"common","target":"single","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"block","amount":10,"upgrade":5,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"block","amount":5,"upgrade":2,"hits":1,"upgradeHits":0,"nextTurn":true}]},{"id":"a7","name":"妖刀解放","kind":"attack","rarity":"uncommon","target":"all","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","amount":15,"upgrade":5,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"energy","amount":2,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":true}]},{"id":"a8","name":"活性","kind":"power","rarity":"rare","cost":2,"exhaust":false,"innate":true,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"regeneration","target":"self","amount":3,"upgrade":0,"nextTurn":false}]},{"id":"a9","name":"忍耐","kind":"skill","rarity":"uncommon","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"block","target":"self","amount":9,"upgrade":3,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"block","target":"self","amount":5,"upgrade":2,"hits":1,"upgradeHits":0,"nextTurn":true}]},{"id":"b1","name":"二连斩","kind":"attack","rarity":"uncommon","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":6,"upgrade":2,"hits":3,"upgradeHits":0,"nextTurn":false}]},{"id":"b2","name":"决心","kind":"skill","rarity":"uncommon","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"vigor","target":"self","amount":3,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"b3","name":"剑舞","kind":"attack","rarity":"common","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":4,"upgrade":2,"hits":2,"upgradeHits":0,"nextTurn":false}]},{"id":"15fa0d2e-0ef8-459a-b6f4-6519de90507b","name":"卡利亚大剑","kind":"attack","rarity":"uncommon","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":15,"upgrade":5,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"weak","target":"self","amount":1,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"6670ac0b-9537-4468-a161-ddb2c5810490","name":"星光碎片","kind":"skill","rarity":"uncommon","cost":0,"exhaust":true,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"energy","target":"self","amount":2,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"98142f48-0e8a-433a-95ec-ec21fe8ffe52","name":"鲜血斩击","kind":"attack","rarity":"common","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"all","amount":7,"upgrade":3,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"heal","target":"self","amount":-2,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"bleed","target":"all","amount":1,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"2462e632-5571-43d0-a2dd-a086a573c9cd","name":"尸横遍野","kind":"attack","rarity":"rare","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"all","amount":10,"upgrade":2,"hits":3,"upgradeHits":0,"nextTurn":false},{"type":"bleed","target":"all","amount":1,"upgrade":0,"hits":3,"upgradeHits":0,"nextTurn":false}]},{"id":"c659f69f-b9b4-47c4-8709-b29782c12a60","name":"米凯拉的光环","kind":"attack","rarity":"rare","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":15,"upgrade":5,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"619c1432-e8ff-4d7a-a96d-2b762680af47","name":"欧赫剑舞","kind":"attack","rarity":"rare","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":3,"upgrade":1,"hits":7,"upgradeHits":0,"nextTurn":false}]},{"id":"0cb303ff-66a1-4592-84b0-841a628b33be","name":"妖取","kind":"skill","rarity":"rare","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"block","target":"self","amount":18,"upgrade":6,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"66a68640-265f-4615-9080-0bb4f931b3b4","name":"风暴刃","kind":"attack","rarity":"uncommon","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":1,"effects":[{"type":"damage","target":"single","amount":10,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"59ec6a05-b075-4ebd-bead-74305f3fce26","name":"缓回","kind":"skill","rarity":"rare","cost":1,"exhaust":true,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"heal","target":"self","amount":6,"upgrade":2,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"heal","target":"self","amount":3,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":true}]},{"id":"31ddd293-92e7-47f8-905e-ee884bdcf5c7","name":"连击回蓝","kind":"power","rarity":"rare","cost":1,"exhaust":false,"innate":true,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"comboEnergy","target":"self","amount":1,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"c63bb507-7918-453b-9fb7-b294065e0dc3","name":"水鸟乱舞","kind":"attack","rarity":"rare","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":1,"effects":[{"type":"damage","target":"single","amount":6,"upgrade":0,"hits":3,"upgradeHits":0,"nextTurn":false},{"type":"bleed","target":"single","amount":1,"upgrade":0,"hits":3,"upgradeHits":0,"nextTurn":false}]},{"id":"ada43e04-af80-44df-9c73-f3da6e98cb66","name":"夸耀咆哮","kind":"skill","rarity":"uncommon","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"strength","target":"self","amount":2,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"draw","target":"self","amount":2,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"strength","target":"self","amount":-2,"upgrade":-1,"hits":1,"upgradeHits":0,"nextTurn":true}]},{"id":"80be8175-cc15-4889-9b05-838e0831cbd0","name":"跳劈","kind":"attack","rarity":"uncommon","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":10,"upgrade":3,"hits":2,"upgradeHits":0,"nextTurn":false}]},{"id":"3d06cb54-1911-4036-a046-95b68fd5151c","name":"家族冤魂","kind":"attack","rarity":"uncommon","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":1,"effects":[{"type":"damage","target":"single","amount":4,"upgrade":0,"hits":4,"upgradeHits":0,"nextTurn":false}]},{"id":"9703c833-5b43-4745-89fe-7f5572aa1b7f","name":"血刃乱舞","kind":"attack","rarity":"uncommon","cost":2,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":1,"effects":[{"type":"damage","target":"single","amount":3,"upgrade":0,"hits":2,"upgradeHits":0,"nextTurn":false},{"type":"bleed","target":"single","amount":1,"upgrade":0,"hits":2,"upgradeHits":0,"nextTurn":false}]},{"id":"6b8e97b8-10c6-416b-8115-b20518ed805a","name":"切腹","kind":"skill","rarity":"uncommon","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"heal","target":"self","amount":-4,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"status","target":"self","amount":2,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false,"status":{"name":"切腹","decay":1,"keepNegative":false,"trigger":"attackBleed","bleedAmount":1}}]},{"id":"furnace-aspect-beast","name":"熔炉百相之兽","kind":"power","rarity":"rare","cost":3,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":1,"effects":[{"type":"furnaceAspect","target":"self","amount":2,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"813c0696-27d1-4a74-a06c-73851c5557f9","name":"突刺","kind":"attack","rarity":"common","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":8,"upgrade":3,"hits":1,"upgradeHits":0,"nextTurn":false},{"type":"weak","target":"single","amount":2,"upgrade":1,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"11a58ba7-44ab-402d-a317-753276e0b3f0","name":"转啊转","kind":"attack","rarity":"uncommon","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"damage","target":"single","amount":3,"upgrade":0,"hits":4,"upgradeHits":1,"nextTurn":false}]},{"id":"9e8c043d-5fb6-496b-959e-0114144e294b","name":"唤血仪式","kind":"skill","rarity":"rare","cost":2,"exhaust":true,"innate":false,"retain":false,"upgradeCostReduction":1,"effects":[{"type":"bleed","target":"all","amount":3,"upgrade":0,"hits":1,"upgradeHits":0,"nextTurn":false}]},{"id":"ba1376f3-408a-49c9-8b55-e4717f16f4d8","name":"鲜血君王的欢愉","kind":"power","rarity":"rare","cost":1,"exhaust":false,"innate":false,"retain":false,"upgradeCostReduction":0,"effects":[{"type":"bleedBlock","target":"self","amount":6,"upgrade":2,"nextTurn":false}]}],"heroes":[{"id":"sample","name":"执行者","description":"用应急工具和失落技术穿过封锁线。示例角色，可在工坊里编辑。","hp":72,"energy":3,"draw":5,"deck":[{"id":"jolt","count":5},{"id":"brace","count":4},{"id":"flare","count":1}],"pool":["a1","a2","a3","a4","a5","a6","a7","a8","a9","b1","b2","b3","15fa0d2e-0ef8-459a-b6f4-6519de90507b","6670ac0b-9537-4468-a161-ddb2c5810490","98142f48-0e8a-433a-95ec-ec21fe8ffe52","2462e632-5571-43d0-a2dd-a086a573c9cd","c659f69f-b9b4-47c4-8709-b29782c12a60","619c1432-e8ff-4d7a-a96d-2b762680af47","0cb303ff-66a1-4592-84b0-841a628b33be","66a68640-265f-4615-9080-0bb4f931b3b4","59ec6a05-b075-4ebd-bead-74305f3fce26","31ddd293-92e7-47f8-905e-ee884bdcf5c7","c63bb507-7918-453b-9fb7-b294065e0dc3","ada43e04-af80-44df-9c73-f3da6e98cb66","80be8175-cc15-4889-9b05-838e0831cbd0","3d06cb54-1911-4036-a046-95b68fd5151c","9703c833-5b43-4745-89fe-7f5572aa1b7f","6b8e97b8-10c6-416b-8115-b20518ed805a","furnace-aspect-beast","813c0696-27d1-4a74-a06c-73851c5557f9"]}]};
+const screen = document.querySelector('#screen');
+const dialog = document.querySelector('#dialog');
+const toast = document.querySelector('#toast');
+const importFile = document.querySelector('#import-file');
+const DESIGN_KEY = 'ember-route.design.v1';
+const RUN_KEY = 'ember-route.run.v1';
+const COMBO_UPDATE_KEY = 'ember-route.combo-energy.v1';
+const SEPPUKU_UPDATE_KEY = 'ember-route.seppuku-bleed.v1';
+const FURNACE_UPDATE_KEY = 'ember-route.furnace-aspect.v1';
+const VITALITY_UPDATE_KEY = 'ember-route.vitality-regeneration.v1';
+const BLOOD_JOY_UPDATE_KEY = 'ember-route.blood-joy.v1';
+const esc = value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const uid = ()=>globalThis.crypto?.randomUUID?.() || Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+const button = (text,action,attributes='',className='button')=>'<button type="button" class="'+className+'" data-action="'+action+'" '+attributes+'>'+text+'</button>';
+let savedWarning = '';
+function read(key) {
+  try { return JSON.parse(localStorage.getItem(key)); }
+  catch { return null; }
+}
+function write(key,value) {
+  try {
+    if(value===null) localStorage.removeItem(key);
+    else localStorage.setItem(key,JSON.stringify(value));
+  } catch {
+    savedWarning='浏览器存储不可用。本次设计可通过「导出 JSON」备份。';
+    notify(savedWarning);
+  }
+}
+let design;
+try { design=validateDesign(read(DESIGN_KEY)); }
+catch { design=structuredClone(PACKAGED_DESIGN ?? sampleDesign()); }
+let run=read(RUN_KEY);
+if(run && (!run.hero || !run.design?.cards || !Array.isArray(run.deck))) run=null;
+if(run?.view==='combat' && run.battle) returnOverflowToDraw(run.battle);
+let view='home';
+let panel='heroes';
+let heroId=design.heroes[0]?.id;
+let editId=heroId;
+let draft=null;
+let aimed=null;
+let toastTimer;
+
+function notify(message) {
+  toast.textContent=message;
+  toast.hidden=false;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{toast.hidden=true;},4200);
+}
+function options(map,selected) {
+  return Object.entries(map).map(([key,label])=>'<option value="'+key+'" '+(selected===key?'selected':'')+'>'+esc(label)+'</option>').join('');
+}
+function sumDeck(hero) { return hero.deck.reduce((total,entry)=>total+entry.count,0); }
+function ailmentRule({name,threshold,damage,vulnerable}) {
+  return name+'每 '+threshold+' 层引爆，造成 '+damage+' 点固定伤害'+(vulnerable?'并附加 '+vulnerable+' 回合易伤':'')+'。';
+}
+function customStatusRule(rule) {
+  const lifetime=(rule.decay?'每回合减少 '+rule.decay+' 层':'层数随战斗持续')+
+    (rule.keepNegative?'，可降为负层':'，降至 0 层时结束');
+  if(rule.trigger==='card') return lifetime+'。打出'+KINDS[rule.cardKind]+'牌后，持有者每层获得 '+rule.rewardAmount+' '+STATUS_REWARDS[rule.rewardType]+'。';
+  if(rule.trigger==='attack') return lifetime+'。接下来 '+rule.attackHits+' 段攻击每层增加 '+rule.attackBonus+' 点基础伤害。';
+  if(rule.trigger==='attackBleed') return lifetime+'。每打出一张攻击牌，对每个存活目标施加 '+rule.bleedAmount+' 层出血。';
+  return lifetime+'。';
+}
+function effectText(card,effect,entry,n=amountOf(effect,entry)) {
+  const mode=effectTarget(card,effect);
+  const group={self:'自己',single:'选中的敌人',all:'敌方全体'}[mode];
+  const recipient=mode==='self'?'':'使'+group;
+  const hits=hitsOf(effect,entry);
+  const suffix=hits>1?' × '+hits:'';
+  const value='<b>'+n+suffix+'</b>';
+  const absolute='<b>'+Math.abs(n)+suffix+'</b>';
+  if(effect.type==='comboEnergy'){
+    return '每造成 <b>'+COMBO_DAMAGE_SEGMENTS+'</b> 段伤害，'+(n<0?'失去':'回复')+' <b>'+Math.abs(n*hits)+'</b> 点能量';
+  }
+  if(effect.type==='bleedBlock'){
+    return '每当任意目标引爆出血，'+(n<0?'失去':'获得')+' <b>'+Math.abs(n*hits)+'</b> 点格挡';
+  }
+  if(effect.type==='furnaceAspect'){
+    return '获得 <b>'+FURNACE_TEMP_HP+suffix+'</b> 点临时生命。持续 <b>'+n+'</b> 回合，攻击牌每段基础伤害 +'+FURNACE_ATTACK_BONUS+
+      '。增益结束时，对敌方全体造成 <b>'+FURNACE_END_DAMAGE+'</b> 点伤害。';
+  }
+  const layers=(n<0?'从'+group+'移除 ':'对'+group+'施加 ')+absolute+' 层';
+  const ailment=AILMENTS[effect.type];
+  if(ailment) return '<span title="'+ailmentRule(ailment)+'">'+layers+ailment.name+'</span>';
+  if(effect.type==='status'){
+    if(n>0 && effect.status.trigger==='attackBleed' && effect.status.decay===1 && !effect.status.keepNegative){
+      return '<b>'+n*hits+'</b> 回合内，每打出一张攻击牌，对目标施加 <b>'+effect.status.bleedAmount+'</b> 层出血';
+    }
+    const statusLayers=n<0 && effect.status.keepNegative ? '使'+group+'的「'+esc(effect.status.name)+'」减少 '+absolute+' 层' : layers+'「'+esc(effect.status.name)+'」';
+    return '<span title="'+esc(customStatusRule(effect.status))+'">'+statusLayers+'</span>';
+  }
+  return {
+    damage:n<0?'为'+group+'回复 '+absolute+' 点生命':'对'+group+'造成 '+value+' 点伤害',
+    block:recipient+(n<0?'失去':'获得')+' '+absolute+' 点格挡',
+    draw:n<0?'从手牌右侧弃掉 '+absolute+' 张牌':'抽 '+value+' 张牌',
+    energy:(n<0?'失去':'获得')+' '+absolute+' 点能量',
+    heal:(n<0?recipient+'失去':(mode==='self'?'回复':'为'+group+'回复'))+' '+absolute+' 点生命',
+    strength:card.kind==='power' && effect.growth ? (mode==='self'?'':group+'的')+'力量加成 '+value :
+      recipient+(n<0?'失去':'获得')+' '+absolute+' 点力量',
+    vigor:(n<0?'失去':'获得')+' '+absolute+' 层活力',
+    dexterity:(n<0?'失去':'获得')+' '+absolute+' 层敏捷',
+    regeneration:(n<0?'失去':'获得')+' '+absolute+' 层再生。己方回合结束时，按层数回血，然后减 1 层',
+    weak:layers+'虚弱',
+    vulnerable:layers+'易伤',
+  }[effect.type];
+}
+function cardText(card,entry={}) {
+  const lines=card.effects.map(effect=>{
+    const text=effectText(card,effect,entry);
+    if(effect.type==='furnaceAspect' || effect.type==='regeneration') return (effect.nextTurn?'下回合开始时，':'')+text;
+    if(effect.type==='comboEnergy' || effect.type==='bleedBlock') return (effect.nextTurn?'下回合起，':'')+text;
+    if(card.kind!=='power') return (effect.nextTurn?'下回合开始时，':'')+text;
+    const timing=effect.nextTurn?'下回合起每回合，':'打出时及以后每回合，';
+    const growth=effect.growth ? '（每回合每段 '+(effect.growth>0?'+':'')+effect.growth+'）' : '';
+    return timing+text+growth;
+  });
+  const keywords=[
+    hasCardKeyword(card,entry,'innate')?'固有':'',
+    hasCardKeyword(card,entry,'retain')?'保留':'',
+    card.exhaust && card.kind!=='power'?'消耗':'',
+  ].filter(Boolean);
+  if(keywords.length) lines.push('<span class="card-keyword-text">'+keywords.join(' · ')+'</span>');
+  return lines.join('<br>');
+}
+function cardTile(card,entry={},action='',attrs='',flags='') {
+  const content='<span class="card-top"><span class="card-cost" title="能量消耗">'+cardCost(card,entry)+'</span><span class="card-rarity">'+RARITIES[card.rarity]+'</span></span>'+
+    '<span class="card-symbol" aria-hidden="true">'+{attack:'✶',skill:'◈',power:'✧'}[card.kind]+'</span>'+
+    '<span class="card-name">'+esc(card.name)+(entry.upgraded?'<em>＋</em>':'')+'</span>'+
+    '<span class="card-kind">'+KINDS[card.kind]+'</span>'+
+    '<span class="card-text">'+cardText(card,entry)+'</span>';
+  const cls='card '+card.kind+' '+card.rarity+' '+flags;
+  return action?button(content,action,attrs,cls):'<article class="'+cls+'">'+content+'</article>';
+}
+function route() {
+  return '<ol class="route" aria-label="航线进度">'+ROOMS.map((room,index)=>
+    '<li class="'+(index<run.room || run.view==='victory'?'passed':'')+(index===run.room?' current':'')+'" '+(index===run.room?'aria-current="step"':'')+'><i aria-hidden="true">'+room.icon+'</i><span>'+room.name+'</span></li>').join('')+'</ol>';
+}
+function lifeBar(hp,maxHp) {
+  return '<span class="life" role="meter" aria-label="生命" aria-valuemin="0" aria-valuemax="'+maxHp+'" aria-valuenow="'+hp+'"><i style="width:'+(hp/maxHp*100)+'%"></i><b>'+hp+' / '+maxHp+'</b></span>';
+}
+function relicStrip() {
+  return run.relics.map(id=>{
+    const relic=RELICS.find(r=>r.id===id);
+    return '<span class="relic-pill" title="'+relic.text+'">'+relic.icon+' '+relic.name+'</span>';
+  }).join('');
+}
+function runHeader() {
+  return '<section class="run-header"><div class="run-meta"><div><b>'+esc(run.hero.name)+'</b><span class="bullet">·</span><span class="hp-text">♥ '+run.hp+' / '+run.maxHp+'</span></div>'+
+    '<div class="run-tools">'+button('牌组 '+run.deck.length,'show-deck','','text-button')+button('规则','rules','','text-button')+'</div></div>'+route()+'</section>';
+}
+function home() {
+  const selected=design.heroes.find(h=>h.id===heroId) || design.heroes[0];
+  heroId=selected?.id;
+  return '<section class="hero"><div class="hero-copy"><p class="overline">快速冒险</p><h1>穿过黑潮<br><em>封锁线</em></h1>'+
+    '<p>带一副牌登船。沿直线迎战四场遭遇，在黑潮核心结束这一幕。</p>'+
+    '<div class="actions">'+(run ? button('继续当前冒险 <span>↗</span>','resume','','button primary') :
+      selected ? button('选择角色 ↓','select-hero','','button primary') : button('创建设计','lab','','button primary'))+
+    button('玩法说明','rules','','button secondary')+'</div></div><div class="hero-art" aria-hidden="true"><div class="orbit"></div><div class="star"></div><div class="rift"></div><i></i><i></i><i></i><i></i></div></section>'+
+    '<section class="dispatch"><div><h2>选择角色</h2><p>角色决定初始牌组、奖励牌池和每回合资源。</p></div>'+
+    (selected ? '<div class="crew"><label for="hero-select">本次出航</label><select id="hero-select">'+options(Object.fromEntries(design.heroes.map(h=>[h.id,h.name])),heroId)+'</select>'+
+      '<p>'+esc(selected.description)+'</p><div class="crew-stats"><span>♥ '+selected.hp+' 生命</span><span>✦ '+selected.energy+' 能量</span><span>▤ '+selected.draw+' 抽牌</span><span>'+sumDeck(selected)+' 张起始牌</span></div></div>'+
+      '<div class="actions">'+button(run?'另开一局 ↗':'开始冒险 ↗','start','','button primary')+button('编辑角色与卡牌','lab','','button secondary')+'</div>'
+      : '<p>工坊中还没有角色。创建角色和起始牌后即可出航。</p>'+button('创建设计','lab','','button primary'))+'</section>';
+}
+function rewards() {
+  const isDraft=run.view==='draft';
+  const quota=Math.min(3,run.options.length);
+  const heading=isDraft?'组装起始牌组':'挑选战利牌';
+  const caption=isDraft ? (quota?'从 '+run.options.length+' 张候选牌中选择 '+quota+' 张，加入原有牌组。':'这个角色的奖励牌池为空，可以直接出航。') :
+    (quota?'选 1 张加入牌组，也可以跳过。':'这个角色没有可抽取的奖励牌。');
+  return '<section class="stage"><div class="stage-head"><p class="overline">'+(isDraft?'出航准备':'战斗胜利')+'</p><h1>'+heading+'</h1><p>'+caption+'</p></div>'+
+    '<div class="cards-grid">'+run.options.map(id=>cardTile(getCard(run,{id}),{},isDraft?'draft-pick':'reward-pick','data-id="'+id+'" '+(isDraft?'aria-pressed="'+run.picks.includes(id)+'"':''),isDraft && run.picks.includes(id)?'chosen':'')).join('')+'</div>'+
+    '<div class="actions end">'+(isDraft?'<span class="muted">已选 '+run.picks.length+' / '+quota+'</span>'+button('启航 ↗','draft-confirm',run.picks.length===quota?'':'disabled','button primary'):
+      button('跳过奖励 ↗','advance','','button secondary'))+'</div></section>';
+}
+function statuses(actor,id='') {
+  const parts=Object.entries(STATUSES).filter(([id])=>actor[id]>0).map(([id,label])=>'<span>'+label+' '+actor[id]+'</span>');
+  for(const [type,ailment] of Object.entries(AILMENTS)){
+    if(actor[type]>0) parts.push('<span class="'+type+'" title="'+ailmentRule(ailment)+'">'+ailment.name+' '+actor[type]+' / '+ailment.threshold+'</span>');
+  }
+  for(const {rule,layers,hitsLeft} of actor.customStatuses??[]){
+    const remaining=rule.trigger==='attack'?' · 余 '+hitsLeft+' 段':'';
+    parts.push('<span class="custom-status" title="'+esc(customStatusRule(rule))+'">'+esc(rule.name)+' '+layers+remaining+'</span>');
+  }
+  if(actor.strength) parts.push('<span>力量 '+actor.strength+'</span>');
+  if(actor.regeneration>0) parts.push('<span title="己方回合结束时，按层数回血，然后减 1 层。">再生 '+actor.regeneration+'</span>');
+  for(const aspect of actor.furnaceAspects??[]){
+    parts.push('<span class="custom-status">'+FURNACE_CARD_NAME+' · '+aspect.turns+' 回合 · 临时生命 '+aspect.hp+'</span>');
+  }
+  if(actor.vigor) parts.push('<span title="层数加到下一张攻击牌的每段基础伤害，打出时消耗全部活力。">活力 '+actor.vigor+'</span>');
+  if(actor.dexterity) parts.push('<span title="每层调整攻击牌和技能牌提供给自己的每段格挡。">敏捷 '+actor.dexterity+'</span>');
+  if(actor.block>0) parts.push('<span>格挡 '+actor.block+'</span>');
+  return '<span class="statuses"'+(id?' id="'+id+'"':'')+'>'+parts.join('')+'</span>';
+}
+function combat() {
+  const b=run.battle;
+  const pendingCount=b.pending?.length ?? 0;
+  const buffCount=b.buffs?.length ?? 0;
+  const room=ROOMS[run.room];
+  const targeted=b.hand.find(entry=>entry.uid===aimed);
+  const enemies=b.enemies.map((foe,index)=>{
+    const intent=enemyIntent(foe,b);
+    const live=foe.hp>0;
+    const statusId='enemy-status-'+index;
+    return '<div class="enemy-wrap">'+button(
+      '<span class="intent '+(intent.attack?'danger':'')+'">'+(live?esc(intent.text):'已击败')+'</span>'+
+      '<span class="enemy-art '+foe.shape+'" aria-hidden="true"><i></i><i></i><i></i></span>'+
+      '<b class="unit-title">'+foe.name+'</b>'+lifeBar(foe.hp,foe.maxHp)+statuses(foe,statusId),
+      'target','data-index="'+index+'" '+(!live?'disabled':'')+' aria-describedby="'+statusId+'" aria-label="'+foe.name+'，'+(live?intent.text:'已击败')+'，生命 '+foe.hp+' / '+foe.maxHp+'"',
+      'unit enemy '+(!live?'fallen':'')+(targeted&&live?' targetable':''))+'</div>';
+  }).join('');
+  return '<section class="battle"><header class="battle-label"><div><p class="overline">'+(room.type==='boss'?'首领战':'遭遇战')+'</p><h1>'+room.name+'</h1></div><span class="turn">回合 '+b.turn+'</span></header>'+
+    '<div class="arena"><div class="unit player"><span class="intent neutral">我方</span><span class="avatar-art" aria-hidden="true"><i></i></span><b class="unit-title">'+esc(run.hero.name)+'</b>'+lifeBar(run.hp,run.maxHp)+statuses(b)+'</div><div class="enemies">'+enemies+'</div></div>'+
+    '<div class="battle-bar"><div class="resource"><span class="energy-icon">✦</span><span><b>'+b.energy+'</b> 能量</span></div>'+
+    '<div class="piles">'+button('抽牌 '+b.draw.length,'pile','data-id="draw"','text-button')+button('弃牌 '+b.discard.length,'pile','data-id="discard"','text-button')+button('消耗 '+b.exhaust.length,'pile','data-id="exhaust"','text-button')+'</div>'+
+    '<div class="actions">'+(pendingCount?button('下回合待结算 '+pendingCount,'show-pending','','text-button'):'')+
+    (buffCount?button('能力 Buff '+buffCount,'show-buffs','','text-button'):'')+
+    button('战报','show-log','','text-button')+button('结束回合 ↵','end-turn','','button primary desktop-end-turn')+'</div></div>'+
+    '<div class="hand-head"><h2>手牌 <span>'+b.hand.length+' / '+HAND_LIMIT+'</span></h2><p aria-live="polite">'+
+    (targeted?'为「'+esc(getCard(run,targeted).name)+'」选择敌人。<span class="desktop-hint"> Esc 取消。</span>':
+      '<span class="desktop-hint">点击出牌，数字键 1–9 可选择手牌。</span><span class="touch-hint">'+(b.hand.length>2?'左右滑动查看手牌，点按出牌。':'点按出牌。')+'</span>')+'</p></div>'+
+    '<div class="hand" data-deal="'+run.room+'-'+b.turn+'">'+b.hand.map((entry,index)=>{
+      const card=getCard(run,entry);
+      const unaffordable=b.energy<cardCost(card,entry);
+      return cardTile(card,entry,'play','data-id="'+entry.uid+'" aria-pressed="'+(entry.uid===aimed)+'" aria-keyshortcuts="'+(index<9?index+1:'')+'" '+(unaffordable?'disabled':''),
+        (entry.uid===aimed?'chosen ':'')+(unaffordable?'unaffordable':''));
+    }).join('')+(b.hand.length?'':'<p class="muted">手牌已空。</p>')+'</div>'+
+    (run.relics.length?'<div class="relic-strip">'+relicStrip()+'</div>':'')+
+    '<div class="touch-battle-controls">'+(targeted?
+      '<span>选择敌人</span>'+button('取消选敌','cancel-target','','button secondary'):
+      '<span class="resource">✦ <b>'+b.energy+'</b> 能量</span>'+button('结束回合','end-turn','','button primary'))+'</div></section>';
+}
+function relicTile(relic) {
+  return '<article class="relic"><span aria-hidden="true">'+relic.icon+'</span><h3>'+relic.name+'</h3><p>'+relic.text+'</p></article>';
+}
+const DEALS = {
+  card:['收录新牌','从商人提供的牌中选 1 张加入牌组。','▤'],
+  upgrade:['校准一张牌','选择 1 张牌，启用它配置的升级效果。','✦'],
+  remove:['丢弃旧牌','从牌组永久移除 1 张牌。','×'],
+  heal:['应急疗养','回复 15 点生命。','✚'],
+  relic:['打捞遗物','随机获得 1 件未拥有的遗物。','◈'],
+};
+function eligibleDeck(action) {
+  return run.deck.filter(entry=>action!=='upgrade' || (!entry.upgraded && canUpgrade(getCard(run,entry))));
+}
+function dealAllowed(key) {
+  if(key==='card') return run.merchantCards.length>0;
+  if(key==='upgrade') return eligibleDeck(key).length>0;
+  if(key==='remove') return run.deck.length>1;
+  if(key==='heal') return run.hp<run.maxHp;
+  if(key==='relic') return RELICS.some(r=>!hasRelic(run,r.id));
+  return false;
+}
+function merchant() {
+  return '<section class="stage"><div class="stage-head"><p class="overline">免费补给</p><h1>漂流商站</h1><p>每项可选一次，最多选 3 项。你也可以提前离开。</p></div><div class="deals">'+
+    Object.entries(DEALS).map(([key,[title,description,icon]])=>{
+      const taken=run.taken.includes(key);
+      const allowed=dealAllowed(key);
+      return button('<span class="deal-icon">'+icon+'</span><b>'+title+'</b><span>'+description+'</span>'+
+        (taken?'<small>已领取</small>':(!allowed?'<small>当前不可用</small>':'')),'deal','data-id="'+key+'" '+(taken||run.taken.length>=3||!allowed?'disabled':''),'deal');
+    }).join('')+'</div><div class="actions end"><span class="muted">已领取 '+run.taken.length+' / 3</span>'+button('离开商站 ↗','advance','','button primary')+'</div>'+
+    (run.relics.length?'<div class="relic-strip">'+relicStrip()+'</div>':'')+'</section>';
+}
+function chest() {
+  return '<section class="stage"><div class="stage-head"><p class="overline">遗物补给</p><h1>密封货舱</h1><p>领取舱内遗物，带着它们迎接下一场战斗。</p></div>'+
+    '<div class="relic-grid">'+run.chest.map(id=>relicTile(RELICS.find(r=>r.id===id))).join('')+'</div>'+
+    '<div class="actions end">'+button('领取并继续 ↗','open-chest','','button primary')+'</div></section>';
+}
+function result() {
+  const win=run.view==='victory';
+  return '<section class="stage result"><div class="result-mark">'+(win?'✷':'◈')+'</div><p class="overline">'+(win?'航线打通':'航行结束')+'</p>'+
+    '<h1>'+(win?'黑潮已退':'沉于黑潮')+'</h1><p>'+esc(run.hero.name)+(win?'击败了黑潮核心。':'在「'+ROOMS[run.room].name+'」倒下了。')+'</p>'+
+    '<div class="crew-stats"><span>胜场 '+run.wins+' / 5</span><span>出牌回合 '+run.rounds+'</span><span>牌组 '+run.deck.length+' 张</span></div>'+
+    '<div class="actions">'+button('回到出航页','return-home','','button primary')+button('前往设计工坊','lab','','button secondary')+'</div></section>';
+}
+function render() {
+  document.querySelector('#nav-game').setAttribute('aria-current',view!=='lab'?'page':'false');
+  document.querySelector('#nav-lab').setAttribute('aria-current',view==='lab'?'page':'false');
+  if(view==='lab'){screen.innerHTML=workshop();return;}
+  if(view==='home'||!run){screen.innerHTML=home();return;}
+  const page={draft:rewards,reward:rewards,combat,merchant,chest,victory:result,defeat:result}[run.view];
+  const previousHand=run.view==='combat'?screen.querySelector('.hand'):null;
+  const handScroll=previousHand?.scrollLeft;
+  screen.innerHTML=runHeader()+page();
+  if(handScroll){
+    const hand=screen.querySelector('.hand');
+    if(hand.dataset.deal===previousHand.dataset.deal) hand.scrollLeft=handScroll;
+  }
+}
+function showDialog(title,content) {
+  dialog.innerHTML='<header class="dialog-head"><h2 id="dialog-title">'+title+'</h2>'+button('×','close-dialog','aria-label="关闭"','text-button close')+'</header><div class="dialog-body">'+content+'</div>';
+  if(!dialog.open) dialog.showModal();
+}
+function displayList(entries,heading) {
+  showDialog(heading,entries.length?'<div class="cards-grid modal-grid">'+entries.map(entry=>cardTile(getCard(run,entry),entry)).join('')+'</div>':'<p>这里暂时没有牌。</p>');
+}
+function showRules() {
+  showDialog('玩法说明','<ol class="rule-list"><li><b>准备</b> 选择角色，从最多 10 张候选牌中选最多 3 张加入起始牌组。</li>'+
+    '<li><b>交战</b> 每回合回复能量并抽牌。查看敌人意图，点击手牌出牌。有单体敌人效果的卡在场上有多个敌人时需要选一次目标，同一张卡的单体效果共用该目标。</li>'+
+    '<li><b>回合结束</b> 保留牌留在手里，其余手牌进入弃牌堆，随后敌人行动。下回合清空己方格挡、补充能量并正常抽牌，然后结算待生效的效果。能力牌和带消耗的牌本场战斗只用一次。</li>'+
+    '<li><b>手牌</b> 上限为 '+HAND_LIMIT+' 张。固有和保留可在工坊设为升级后获得。首回合固有牌优先上手，超出的固有牌放在抽牌堆顶。手牌满时暂停抽牌。</li>'+
+    '<li><b>状态</b> 每点力量让每次攻击多造成 1 点伤害。虚弱使攻击伤害减少 25%，易伤使受到的伤害增加 50%。</li>'+
+    '<li><b>活力与敏捷</b> 活力全部用于下一张攻击牌，加到该牌每段基础伤害上。敏捷持续整场战斗，每层调整攻击牌和技能牌提供给自己的每段格挡。</li>'+
+    '<li><b>能力 Buff</b> 每项能力持续到战斗结束，首次生效时机可选，后续在回合开始的待结算效果之后生效。单体敌方效果优先作用于原目标，原目标倒下时转向第一个存活敌人。力量的成长值会更新该 Buff 的力量加成。</li>'+
+    '<li><b>多段效果</b> 每项效果按段依次结算。伤害每段计算力量、虚弱、易伤和格挡。敌人被击败后，后续段数跳过该目标。</li>'+
+    '<li><b>负数效果</b> 负伤害为目标回血，负回复使目标失去生命，负抽牌从手牌右侧弃牌。格挡、能量和普通状态层数最低减到 0，力量和允许负层的自定义状态可以继续降低。</li>'+
+    '<li><b>异常引爆</b> '+Object.values(AILMENTS).map(ailmentRule).join('')+' 层数按敌人分别累计，跨回合保留。引爆消耗对应层数并穿透格挡。</li>'+
+    '<li><b>自定义状态</b> 敌方行动后统一扣除回合层数。牌型收益在打出符合类型的牌后触发，使用打出前的层数。攻击状态按每段消耗一次，全体攻击的一段共消耗一次。</li>'+
+    '<li><b>推进</b> 四场遭遇战之后迎战首领。每场遭遇获胜可选 1 张奖励牌，途中还能在商人处免费领取最多三项服务，并从宝箱领取两件遗物。</li></ol>');
+}
+
+function input(label,name,value,attributes='') {
+  return '<label class="field">'+label+'<input name="'+name+'" value="'+esc(value)+'" '+attributes+'></label>';
+}
+function selectField(label,name,map,value) {
+  return '<label class="field">'+label+'<select name="'+name+'">'+options(map,value)+'</select></label>';
+}
+function numberField(label,name,value,min,max,disabled=false) {
+  return input(label,name,value,'type="number" min="'+min+'" max="'+max+'" step="1" required'+(disabled?' disabled':''));
+}
+function checkField(label,name,checked,description) {
+  return '<label class="check" title="'+description+'"><input type="checkbox" name="'+name+'" '+(checked?'checked':'')+'>'+label+'</label>';
+}
+function effectTargetOptions(type) {
+  return onlySelfTarget(type) ? {self:TARGETS.self} : TARGETS;
+}
+function statusRewardOptions(target) {
+  return Object.fromEntries(Object.entries(STATUS_REWARDS).filter(([type])=>target==='self' || !onlySelfTarget(type)));
+}
+function statusFields(card,effect,index) {
+  const rule=effect.status??{};
+  const enabled=effect.type==='status';
+  const trigger=rule.trigger??'none';
+  const toggles=visible=>visible?'':' hidden disabled';
+  return '<fieldset class="effect-status" id="status-fields-'+index+'"'+toggles(enabled)+'><legend>状态规则</legend>'+
+    '<div class="field-grid">'+input('状态名称','statusName-'+index,rule.name??'','maxlength="24" required')+
+    numberField('每回合减少层数','statusDecay-'+index,rule.decay??0,0,99)+
+    selectField('层数下限','statusLifetime-'+index,{zero:'到 0 层结束',negative:'继续减到负数'},rule.keepNegative?'negative':'zero')+
+    selectField('触发方式','statusTrigger-'+index,STATUS_TRIGGERS,trigger)+'</div>'+
+    '<fieldset class="status-trigger-fields" id="status-card-'+index+'"'+toggles(trigger==='card')+'><legend>牌型收益</legend><div class="field-grid">'+
+    selectField('打出的牌型','statusKind-'+index,KINDS,rule.cardKind??'attack')+
+    selectField('持有者获得','statusReward-'+index,statusRewardOptions(effectTarget(card,effect)),rule.rewardType??'block')+
+    numberField('每层收益','statusRewardAmount-'+index,rule.rewardAmount??1,1,99)+'</div></fieldset>'+
+    '<fieldset class="status-trigger-fields" id="status-attack-'+index+'"'+toggles(trigger==='attack')+'><legend>逐段攻击增益</legend><div class="field-grid">'+
+    numberField('可增益段数','statusAttackHits-'+index,rule.attackHits??1,1,MAX_EFFECT_HITS)+
+    numberField('每层增加的伤害','statusAttackBonus-'+index,rule.attackBonus??1,1,99)+'</div></fieldset>'+
+    '<fieldset class="status-trigger-fields" id="status-attackBleed-'+index+'"'+toggles(trigger==='attackBleed')+'><legend>攻击施加出血</legend><div class="field-grid">'+
+    numberField('每张攻击牌施加层数','statusBleedAmount-'+index,rule.bleedAmount??1,1,99)+'</div></fieldset></fieldset>';
+}
+function defaultDraft() {
+  if(panel==='heroes') return {id:uid(),name:'',description:'',hp:65,energy:3,draw:5,deck:[],pool:[]};
+  return {id:uid(),name:'',kind:'attack',rarity:'common',target:'single',cost:1,exhaust:false,effects:[{type:'damage',amount:6,upgrade:3}]};
+}
+function selectEditor(id) {
+  const item=design[panel].find(entry=>entry.id===id);
+  editId=item?.id || null;
+  draft=item?structuredClone(item):defaultDraft();
+}
+function heroFields(hero) {
+  const amounts=new Map(hero.deck.map(entry=>[entry.id,entry.count]));
+  return input('角色名称','name',hero.name,'maxlength="28" required')+
+    '<label class="field">角色简介<textarea name="description" maxlength="160" rows="2">'+esc(hero.description)+'</textarea></label>'+
+    '<div class="field-grid">'+numberField('生命上限','hp',hero.hp,1,999)+numberField('每回合能量','energy',hero.energy,1,9)+numberField('每回合抽牌','draw',hero.draw,1,12)+'</div>'+
+    '<h3>起始牌组与奖励池</h3><p class="muted">填写起手份数，并勾选可在开局、战后和商站出现的牌。</p>'+
+    (design.cards.length?'<div class="deck-table"><table><thead><tr><th scope="col">卡牌</th><th scope="col">起手份数</th><th scope="col">加入奖励池</th></tr></thead><tbody>'+
+      design.cards.map(card=>'<tr><th scope="row">'+esc(card.name)+' <small>'+KINDS[card.kind]+' · '+card.cost+'费</small></th>'+
+        '<td><input type="number" min="0" max="20" step="1" required aria-label="'+esc(card.name)+'的起手份数" name="count-'+card.id+'" value="'+(amounts.get(card.id)??0)+'"></td>'+
+        '<td><input type="checkbox" aria-label="'+esc(card.name)+'加入奖励池" name="pool-'+card.id+'" '+(hero.pool.includes(card.id)?'checked':'')+'></td></tr>').join('')+
+      '</tbody></table></div>':'<p>先在卡牌面板创建一张卡牌。</p>');
+}
+function cardFields(card) {
+  const timing={now:'立即',next:'下回合开始时'};
+  return input('卡牌名称','name',card.name,'maxlength="28" required')+
+    '<div class="field-grid">'+selectField('类型','kind',KINDS,card.kind)+selectField('稀有度','rarity',RARITIES,card.rarity)+numberField('能量费用','cost',card.cost,0,9)+
+      numberField('升级减费（0 为关闭）','upgradeCostReduction',card.upgradeCostReduction??0,0,9)+'</div>'+
+    '<div class="card-keywords">'+checkField('升级后获得固有','innate',card.innate,'升级后，每场战斗首回合优先上手，超过手牌上限的固有牌放在抽牌堆顶。')+
+      checkField('升级后获得保留','retain',card.retain,'升级后，回合结束时未打出的这张牌留在手中。')+
+      checkField('打出后消耗','exhaust',card.exhaust,'打出后进入消耗堆，能力牌默认消耗。')+'</div><h3>出牌效果</h3>'+
+    '<p class="muted">每项效果单独选择目标，基础数值和升级增量均可填负数。升级增量加到每段，升级后每项最多 '+MAX_EFFECT_HITS+' 段。</p>'+
+    '<p id="power-editor-help" class="muted"'+(card.kind==='power'?'':' hidden')+'>能力效果持续整场战斗。结算时机决定首次触发。每回合成长填 0 时固定触发，填正数或负数时，每段数值在下一次触发前按该值调整。</p>'+
+    '<div class="effects">'+card.effects.map((effect,index)=>'<div class="effect-row">'+selectField('效果 '+(index+1),'effect-'+index,EFFECTS,effect.type)+
+      numberField('基础数值','amount-'+index,effect.amount,-MAX_EFFECT_AMOUNT,MAX_EFFECT_AMOUNT)+
+      numberField('升级增量','upgrade-'+index,effect.upgrade,-MAX_EFFECT_AMOUNT,MAX_EFFECT_AMOUNT)+
+      '<div class="effect-hits">'+numberField('段数','hits-'+index,effect.hits??1,1,MAX_EFFECT_HITS)+'</div>'+
+      '<div class="effect-upgrade-hits">'+numberField('升级增加段数','upgradeHits-'+index,effect.upgradeHits??0,0,MAX_EFFECT_HITS-1)+'</div>'+
+      '<div class="effect-timing">'+selectField('结算时机','timing-'+index,timing,effect.nextTurn?'next':'now')+'</div>'+
+      button('×','remove-effect','data-index="'+index+'" aria-label="移除效果 '+(index+1)+'" '+(card.effects.length===1?'disabled':''),'text-button close')+
+      '<div class="effect-target">'+selectField('效果目标','target-'+index,effectTargetOptions(effect.type),effectTarget(card,effect))+'</div>'+
+      '<div class="effect-growth"'+(canGrowEffect(card.kind,effect.type)?'':' hidden')+'>'+
+        numberField('每回合成长（每段）','growth-'+index,effect.growth??0,-MAX_POWER_GROWTH,MAX_POWER_GROWTH,!canGrowEffect(card.kind,effect.type))+'</div>'+
+      statusFields(card,effect,index)+'</div>').join('')+'</div>'+
+    button('＋ 添加效果','add-effect',card.effects.length===6?'disabled':'','button secondary')+
+    (card.name?'<aside class="card-preview" aria-label="卡牌预览">'+cardTile(card)+(canUpgrade(card)?cardTile(card,{upgraded:true}):'')+'</aside>':'');
+}
+function workshop() {
+  if(!draft) selectEditor(editId);
+  const isHero=panel==='heroes';
+  const noun=isHero?'角色':'卡牌';
+  return '<section class="lab"><div class="lab-head"><div><h1>设计工坊</h1><p>创建自己的角色和卡牌，保存后可在下一局冒险中使用。</p></div>'+
+    '<div class="actions">'+button('导入 JSON','import','','button secondary')+button('导出 JSON','export','','button secondary')+'</div></div>'+
+    (savedWarning?'<p class="form-message">'+savedWarning+'</p>':'')+
+    '<div class="lab-layout"><aside class="lab-sidebar"><div class="tabs">'+button('角色','tab','data-id="heroes" aria-pressed="'+isHero+'"','tab')+
+      button('卡牌','tab','data-id="cards" aria-pressed="'+!isHero+'"','tab')+'</div>'+
+    '<div class="item-list" aria-label="'+noun+'列表">'+design[panel].map(item=>button(esc(item.name)+(isHero?'':'<small>'+item.cost+'费</small>'),'edit','data-id="'+item.id+'" aria-pressed="'+(item.id===editId)+'"','list-item')).join('')+
+    '</div>'+button('＋ 新建'+noun,'new-item','','button secondary')+'</aside>'+
+    '<form id="editor" class="editor"><h2>'+(editId?'编辑':'新建')+noun+'</h2>'+ (isHero?heroFields(draft):cardFields(draft))+
+    '<p id="form-message" class="form-message" role="alert" hidden></p><div class="actions end">'+(editId?button('删除'+noun,'delete-item','','button quiet'):'')+
+    '<button type="submit" class="button primary">保存'+noun+'</button></div></form></div></section>';
+}
+function readEditor() {
+  const form=document.querySelector('#editor');
+  const data=new FormData(form);
+  const name=String(data.get('name')).trim();
+  const num=(key)=>data.get(key)==='' ? NaN : Number(data.get(key));
+  if(panel==='heroes'){
+    return {id:draft.id,name,description:String(data.get('description')).trim(),hp:num('hp'),energy:num('energy'),draw:num('draw'),
+      deck:design.cards.map(card=>({id:card.id,count:num('count-'+card.id)})).filter(entry=>entry.count>0),
+      pool:design.cards.filter(card=>data.has('pool-'+card.id)).map(card=>card.id)};
+  }
+  return {id:draft.id,name,kind:data.get('kind'),rarity:data.get('rarity'),cost:num('cost'),
+    exhaust:data.has('exhaust'),innate:data.has('innate'),retain:data.has('retain'),upgradeCostReduction:num('upgradeCostReduction'),
+    effects:draft.effects.map((_,i)=>{
+      const type=data.get('effect-'+i);
+      const effect={type,target:data.get('target-'+i)??effectTarget(draft,{type}),amount:num('amount-'+i),upgrade:num('upgrade-'+i),
+        hits:num('hits-'+i),upgradeHits:num('upgradeHits-'+i),nextTurn:data.get('timing-'+i)==='next'};
+      const key='growth-'+i;
+      if(data.has(key) && canGrowEffect(data.get('kind'),effect.type)) effect.growth=num(key);
+      if(type==='status'){
+        const trigger=data.get('statusTrigger-'+i);
+        effect.status={name:String(data.get('statusName-'+i)??'').trim(),decay:num('statusDecay-'+i),
+          keepNegative:data.get('statusLifetime-'+i)==='negative',trigger};
+        if(trigger==='card') Object.assign(effect.status,{cardKind:data.get('statusKind-'+i),
+          rewardType:data.get('statusReward-'+i),rewardAmount:num('statusRewardAmount-'+i)});
+        if(trigger==='attack') Object.assign(effect.status,{attackHits:num('statusAttackHits-'+i),attackBonus:num('statusAttackBonus-'+i)});
+        if(trigger==='attackBleed') effect.status.bleedAmount=num('statusBleedAmount-'+i);
+      }
+      return effect;
+    })};
+}
+function saveDesign(next) {
+  design=validateDesign(next);
+  write(DESIGN_KEY,design);
+}
+function editorError(message) {
+  const field=document.querySelector('#form-message');
+  field.textContent=message;
+  field.hidden=false;
+}
+function deleteDesign() {
+  const item=design[panel].find(entry=>entry.id===editId);
+  if(!item) return;
+  if(panel==='cards'){
+    const used=design.heroes.filter(h=>h.pool.includes(editId)||h.deck.some(entry=>entry.id===editId));
+    if(used.length){editorError('请先从 '+used.map(h=>h.name).join('、')+' 的起始牌组和奖励池中移除此卡。');return;}
+  }
+  showDialog('删除设计？','<p>删除「'+esc(item.name)+'」后，工坊将移除这项设计。</p><div class="actions end">'+
+    button('取消','close-dialog','','button secondary')+button('确认删除','confirm-delete','','button primary')+'</div>');
+}
+
+function refreshRun() {
+  write(RUN_KEY,run);
+  render();
+}
+function startRun() {
+  if(!heroId) return;
+  run=newRun(design,heroId);
+  view='run';
+  aimed=null;
+  dialog.close();
+  refreshRun();
+  screen.focus();
+}
+function finishDeal(key) {
+  run.taken.push(key);
+  dialog.close();
+  refreshRun();
+}
+function chooseDeal(key) {
+  if(run.view!=='merchant' || run.taken.includes(key) || run.taken.length>=3 || !dealAllowed(key)) return;
+  if(key==='heal'){changeHp(run,15);finishDeal(key);return;}
+  if(key==='relic'){
+    const relic=shuffle(RELICS.filter(r=>!hasRelic(run,r.id)))[0];
+    if(relic){gainRelic(run,relic.id);finishDeal(key);notify('获得「'+relic.name+'」。');}
+    return;
+  }
+  const entries=key==='card'?run.merchantCards.map(id=>({id,uid:id})):eligibleDeck(key);
+  showDialog(DEALS[key][0],'<div class="cards-grid modal-grid">'+entries.map(entry=>{
+    const attrs='data-key="'+key+'" data-id="'+entry.uid+'"';
+    return cardTile(getCard(run,entry),key==='upgrade'?{...entry,upgraded:true}:entry,'deal-choice',attrs);
+  }).join('')+'</div>');
+}
+function play(uid) {
+  const b=run.battle;
+  const entry=b.hand.find(item=>item.uid===uid);
+  if(!entry) return;
+  const card=getCard(run,entry);
+  if(b.energy<cardCost(card,entry)){notify('能量不足。');return;}
+  const living=b.enemies.flatMap((enemy,index)=>enemy.hp>0?[index]:[]);
+  if(requiresTarget(card)&&living.length>1){
+    aimed=aimed===uid?null:uid;
+    render();
+    if(aimed) screen.querySelector('.targetable')?.focus();
+    return;
+  }
+  if(playCard(run,uid,living[0])){aimed=null;refreshRun();}
+}
+function exportDesign() {
+  const blob=new Blob([JSON.stringify(design,null,2)],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const download=document.createElement('a');
+  download.href=url;
+  download.download='ember-route-design.json';
+  download.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+let imported;
+importFile.addEventListener('change',async()=>{
+  const file=importFile.files[0];
+  importFile.value='';
+  if(!file) return;
+  try {
+    if(file.size>1000000) throw new Error('设计文件最多支持 1 MB。');
+    imported=validateDesign(JSON.parse(await file.text()));
+    const furnace=imported.cards.find(card=>card.name===FURNACE_CARD_NAME);
+    if(furnace) imported={...imported,cards:imported.cards.map(card=>card===furnace?updateFurnaceCard(card):card)};
+    const vitality=imported.cards.find(card=>card.id==='a8' && card.name===VITALITY_CARD_NAME);
+    if(vitality) imported={...imported,cards:imported.cards.map(card=>card===vitality?updateVitalityCard(card):card)};
+    const bloodJoy=imported.cards.find(card=>card.id===BLOOD_JOY_CARD_ID);
+    if(bloodJoy) imported={...imported,cards:imported.cards.map(card=>card===bloodJoy?updateBloodJoyCard(card):card)};
+    showDialog('导入设计','<p>将工坊内容替换为文件中的 '+imported.heroes.length+' 个角色和 '+imported.cards.length+' 张卡牌。需要留存当前设计时可以先导出备份。</p>'+
+      '<div class="actions end">'+button('导出当前设计','export','','button secondary')+button('确认导入','confirm-import','','button primary')+'</div>');
+  } catch(error) {
+    notify(error instanceof SyntaxError?'无法读取 JSON，请选择有效的工坊文件。':error.message);
+  }
+});
+
+document.addEventListener('click',event=>{
+  const control=event.target.closest('button[data-action]');
+  if(!control || control.disabled) return;
+  const {action,id,index,key}=control.dataset;
+  switch(action){
+    case 'home':
+      view='home';render();break;
+    case 'game':
+      view=run?'run':'home';render();break;
+    case 'lab':
+      view='lab';render();break;
+    case 'rules':
+      showRules();break;
+    case 'resume':
+      view='run';render();break;
+    case 'select-hero':
+      screen.querySelector('#hero-select').focus();break;
+    case 'start':
+      if(run && run.view!=='victory' && run.view!=='defeat'){
+        showDialog('另开一局？','<p>新冒险会替换现有冒险进度。</p><div class="actions end">'+button('取消','close-dialog','','button secondary')+button('开始新冒险','start-confirm','','button primary')+'</div>');
+      } else startRun();
+      break;
+    case 'start-confirm': startRun();break;
+    case 'draft-pick':
+      if(run.picks.includes(id)) run.picks=run.picks.filter(pick=>pick!==id);
+      else if(run.picks.length<Math.min(3,run.options.length)) run.picks.push(id);
+      else {notify('名额已满，再点一次已选卡牌可以取消。');break;}
+      refreshRun();
+      screen.querySelector('[data-action="draft-pick"][data-id="'+id+'"]')?.focus();
+      break;
+    case 'draft-confirm':
+      if(run.picks.length!==Math.min(3,run.options.length)) break;
+      for(const pick of run.picks) addCard(run,pick);
+      advance(run);refreshRun();screen.focus();break;
+    case 'advance':
+      advance(run);refreshRun();screen.focus();break;
+    case 'reward-pick':
+      if(!run.options.includes(id)) break;
+      addCard(run,id);advance(run);refreshRun();screen.focus();break;
+    case 'open-chest':
+      for(const relic of run.chest) gainRelic(run,relic);
+      advance(run);refreshRun();screen.focus();break;
+    case 'play': play(Number(id));break;
+    case 'target':
+      if(aimed && playCard(run,aimed,Number(index))){aimed=null;refreshRun();}
+      break;
+    case 'cancel-target':
+      aimed=null;render();break;
+    case 'end-turn':
+      aimed=null;endTurn(run);refreshRun();break;
+    case 'deal': chooseDeal(id);break;
+    case 'deal-choice':
+      if(run.view!=='merchant'||!dealAllowed(key)||run.taken.includes(key)||run.taken.length>=3) break;
+      if(key==='card'&&run.merchantCards.includes(id)) addCard(run,id);
+      if(key==='upgrade'){
+        const entry=eligibleDeck(key).find(card=>card.uid===Number(id));
+        if(!entry) break;
+        entry.upgraded=true;
+      }
+      if(key==='remove') run.deck=run.deck.filter(entry=>entry.uid!==Number(id));
+      finishDeal(key);
+      break;
+    case 'show-deck':
+      displayList(run.deck,'牌组 · '+run.deck.length+' 张');break;
+    case 'pile': {
+      const entries=id==='draw'?[...run.battle.draw].sort((a,b)=>a.uid-b.uid):run.battle[id];
+      displayList(entries,{draw:'抽牌堆 · 按牌组顺序',discard:'弃牌堆',exhaust:'消耗牌堆'}[id]);break;
+    }
+    case 'show-log':
+      showDialog('战报','<ol class="rule-list">'+run.battle.log.map(line=>'<li>'+esc(line)+'</li>').join('')+'</ol>');break;
+    case 'show-buffs':
+      showDialog('能力 Buff','<ol class="rule-list">'+(run.battle.buffs??[]).map(buff=>{
+        const {entry,effect,activations}=buff;
+        const card=getCard(run,entry);
+        if(effect.type==='comboEnergy'){
+          const progress=activations?'累计 '+(buff.damageSegments??0)+' / '+COMBO_DAMAGE_SEGMENTS+' 段':'下回合开始累计';
+          return '<li><b>'+esc(card.name)+(entry.upgraded?'＋':'')+'</b><p>'+effectText(card,effect,entry)+'</p><p>'+progress+'</p></li>';
+        }
+        if(effect.type==='bleedBlock'){
+          return '<li><b>'+esc(card.name)+(entry.upgraded?'＋':'')+'</b><p>'+effectText(card,effect,entry)+'</p>'+
+            (activations?'':'<p>下回合开始生效</p>')+'</li>';
+        }
+        const current=activations>0 ? '本回合：'+effectText(card,effect,entry,powerAmount(buff,activations-1)) : '等待首次生效';
+        const next=effectText(card,effect,entry,powerAmount(buff));
+        return '<li><b>'+esc(card.name)+(entry.upgraded?'＋':'')+'</b><p>'+current+'</p><p>下回合：'+next+'</p></li>';
+      }).join('')+'</ol>');
+      break;
+    case 'show-pending':
+      showDialog('下回合待结算','<ol class="rule-list">'+(run.battle.pending??[]).map(({entry,effect,enemyIndex})=>{
+        const card=getCard(run,entry);
+        const foe=effectTarget(card,effect)==='single' ? run.battle.enemies[enemyIndex] : null;
+        return '<li><b>'+esc(card.name)+(entry.upgraded?'＋':'')+'</b> · '+effectText(card,effect,entry)+
+          (foe?'（'+esc(foe.name)+(foe.hp>0?'':'，已击败')+'）':'')+'</li>';
+      }).join('')+'</ol>');
+      break;
+    case 'return-home':
+      run=null;view='home';refreshRun();screen.focus();break;
+    case 'tab':
+      panel=id;selectEditor(design[panel][0]?.id);render();break;
+    case 'edit':
+      selectEditor(id);render();break;
+    case 'new-item':
+      selectEditor(null);render();screen.querySelector('[name="name"]').focus();break;
+    case 'add-effect':
+    case 'remove-effect': {
+      if(!document.querySelector('#editor').querySelectorAll('input[type="number"]:invalid').length){
+        draft=readEditor();
+        if(action==='add-effect') draft.effects.push({type:'block',amount:5,upgrade:2});
+        else draft.effects.splice(Number(index),1);
+        render();
+      } else editorError('请先填写有效的数值。');
+      break;
+    }
+    case 'delete-item': deleteDesign();break;
+    case 'confirm-delete':
+      saveDesign({...design,[panel]:design[panel].filter(item=>item.id!==editId)});
+      selectEditor(design[panel][0]?.id);dialog.close();render();notify('设计已删除。');break;
+    case 'export': exportDesign();break;
+    case 'import': importFile.click();break;
+    case 'confirm-import':
+      saveDesign(imported);heroId=design.heroes[0]?.id;selectEditor(design[panel][0]?.id);dialog.close();render();notify('设计已导入。');break;
+    case 'close-dialog': dialog.close();break;
+  }
+});
+function syncGrowthField(form,index,kind,type) {
+  const growth=form.elements.namedItem('growth-'+index);
+  if(!growth) return;
+  growth.disabled=!canGrowEffect(kind,type);
+  growth.closest('.effect-growth').hidden=growth.disabled;
+}
+function syncStatusFields(form,index) {
+  const fields=form.querySelector?.('#status-fields-'+index);
+  if(!fields) return;
+  fields.hidden=fields.disabled=form.elements.namedItem('effect-'+index).value!=='status';
+  if(fields.disabled) return;
+  const trigger=form.elements.namedItem('statusTrigger-'+index).value;
+  for(const mode of ['card','attack','attackBleed']){
+    const triggerFields=form.querySelector('#status-'+mode+'-'+index);
+    triggerFields.hidden=triggerFields.disabled=trigger!==mode;
+  }
+  const reward=form.elements.namedItem('statusReward-'+index);
+  const rewards=statusRewardOptions(form.elements.namedItem('target-'+index).value);
+  reward.innerHTML=options(rewards,Object.hasOwn(rewards,reward.value)?reward.value:'block');
+}
+screen.addEventListener('change',event=>{
+  if(event.target.id==='hero-select'){heroId=event.target.value;render();screen.querySelector('#hero-select').focus();}
+  const {name,value,form}=event.target;
+  if(form?.id!=='editor') return;
+  const effectIndex=/^effect-(\d+)$/.exec(name)?.[1];
+  if(effectIndex!==undefined){
+    const target=form.elements.namedItem('target-'+effectIndex);
+    if(target){
+      const choices=effectTargetOptions(value);
+      const previous=target.value;
+      const preferred=target.options.length===1 ? effectTarget(draft,{type:value}) : previous;
+      target.innerHTML=options(choices,Object.hasOwn(choices,preferred)?preferred:'self');
+    }
+    syncGrowthField(form,effectIndex,form.elements.namedItem('kind')?.value,value);
+    syncStatusFields(form,effectIndex);
+  }
+  const statusIndex=/^(?:target|statusTrigger)-(\d+)$/.exec(name)?.[1];
+  if(statusIndex!==undefined) syncStatusFields(form,statusIndex);
+  if(name==='kind'){
+    form.querySelector('#power-editor-help').hidden=value!=='power';
+    for(let index=0;index<draft.effects.length;index++){
+      syncGrowthField(form,index,value,form.elements.namedItem('effect-'+index).value);
+    }
+  }
+});
+screen.addEventListener('submit',event=>{
+  if(event.target.id!=='editor') return;
+  event.preventDefault();
+  try {
+    const item=readEditor();
+    const list=editId?design[panel].map(entry=>entry.id===editId?item:entry):[...design[panel],item];
+    savedWarning='';
+    saveDesign({...design,[panel]:list});
+    if(panel==='heroes') heroId=item.id;
+    selectEditor(item.id);
+    render();
+    if(!savedWarning) notify('已保存「'+item.name+'」。');
+  } catch(error) {editorError(error.message);}
+});
+document.addEventListener('keydown',event=>{
+  if(view!=='run' || run?.view!=='combat' || dialog.open || event.altKey || event.ctrlKey||event.metaKey || event.repeat) return;
+  if(event.key==='Escape'&&aimed){aimed=null;render();return;}
+  if(event.key==='Enter'&&!event.target.closest('button,input,select,textarea')){
+    event.preventDefault();aimed=null;endTurn(run);refreshRun();
+  }
+  if(/^[1-9]$/.test(event.key)){
+    const entry=run.battle.hand[Number(event.key)-1];
+    if(entry){event.preventDefault();play(entry.uid);}
+  }
+});
+const packagedCombo=PACKAGED_DESIGN?.cards.find(card=>card.id===COMBO_CARD_ID);
+const savedCombo=design.cards.find(card=>card.id===COMBO_CARD_ID);
+if(packagedCombo && savedCombo && !read(COMBO_UPDATE_KEY)){
+  if(!savedCombo.effects.some(effect=>effect.type==='comboEnergy')){
+    const {kind,rarity,cost,innate,effects}=packagedCombo;
+    saveDesign({...design,cards:design.cards.map(card=>card===savedCombo
+      ? {...card,kind,rarity,cost,innate,effects:structuredClone(effects)} : card)});
+  }
+  write(COMBO_UPDATE_KEY,true);
+}
+const packagedBleed=PACKAGED_DESIGN?.cards.find(card=>card.id===SEPPUKU_CARD_ID)?.effects
+  .find(effect=>effect.status?.trigger==='attackBleed');
+const savedSeppuku=design.cards.find(card=>card.id===SEPPUKU_CARD_ID);
+if(packagedBleed && savedSeppuku && !read(SEPPUKU_UPDATE_KEY)){
+  if(savedSeppuku.effects.some(effect=>effect.status?.trigger==='attackBleed')){
+    write(SEPPUKU_UPDATE_KEY,true);
+  } else if(savedSeppuku.effects.length<6){
+    saveDesign({...design,cards:design.cards.map(card=>card===savedSeppuku
+      ? {...card,effects:[...card.effects,structuredClone(packagedBleed)]} : card)});
+    write(SEPPUKU_UPDATE_KEY,true);
+  }
+}
+const packagedFurnace=PACKAGED_DESIGN?.cards.find(card=>card.name===FURNACE_CARD_NAME);
+const savedFurnace=design.cards.find(card=>card.name===FURNACE_CARD_NAME);
+if(packagedFurnace && !read(FURNACE_UPDATE_KEY)){
+  if(savedFurnace){
+    const updated=updateFurnaceCard(savedFurnace);
+    if(updated!==savedFurnace) saveDesign({...design,cards:design.cards.map(card=>card===savedFurnace?updated:card)});
+    if(updated.effects.some(effect=>effect.type==='furnaceAspect')) write(FURNACE_UPDATE_KEY,true);
+  } else if(design.cards.length<150 && design.cards.some(card=>card.id===SEPPUKU_CARD_ID)){
+    saveDesign({...design,cards:[...design.cards,structuredClone(packagedFurnace)]});
+    write(FURNACE_UPDATE_KEY,true);
+  }
+}
+const savedVitality=design.cards.find(card=>card.id==='a8' && card.name===VITALITY_CARD_NAME);
+if(savedVitality && !read(VITALITY_UPDATE_KEY)){
+  const updated=updateVitalityCard(savedVitality);
+  if(updated!==savedVitality) saveDesign({...design,cards:design.cards.map(card=>card===savedVitality?updated:card)});
+  write(VITALITY_UPDATE_KEY,true);
+}
+const savedBloodJoy=design.cards.find(card=>card.id===BLOOD_JOY_CARD_ID);
+if(savedBloodJoy && !read(BLOOD_JOY_UPDATE_KEY)){
+  const updated=updateBloodJoyCard(savedBloodJoy);
+  if(updated!==savedBloodJoy) saveDesign({...design,cards:design.cards.map(card=>card===savedBloodJoy?updated:card)});
+  write(BLOOD_JOY_UPDATE_KEY,true);
+}
+render();
+</script>
+</body>
+</html>
